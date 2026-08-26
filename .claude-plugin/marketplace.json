@@ -1,0 +1,28 @@
+{
+  "name": "somacheck",
+  "owner": {
+    "name": "Sensie",
+    "email": "agents@joinsensie.com",
+    "url": "https://somacheck.com"
+  },
+  "description": "The public SomaCheck vibecheck skill for Claude.",
+  "plugins": [
+    {
+      "name": "vibecheck",
+      "source": ".",
+      "description": "Teach Claude when to request or offer a consented SomaCheck vibecheck.",
+      "version": "0.6.6",
+      "author": {
+        "name": "Sensie",
+        "email": "agents@joinsensie.com"
+      },
+      "category": "productivity",
+      "tags": [
+        "vibecheck",
+        "somacheck",
+        "decision-support",
+        "mcp"
+      ]
+    }
+  ]
+}
