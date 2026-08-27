@@ -2,36 +2,40 @@
 
 Vibecheck lets an AI agent, with your consent, send one first-person statement to SomaCheck for you to test with a phone gesture. The agent receives an Aligned or Unaligned signal with confidence and can use it as context. You remain the authority.
 
-This public repository contains only the Claude marketplace manifest and agent skill. The local MCP runtime is distributed through the public [`@somacheck/vibecheck`](https://www.npmjs.com/package/@somacheck/vibecheck) package.
+This public repository contains the Claude marketplace manifest, the agent skill, and a bundled connector to SomaCheck's hosted MCP server. A local, npm-distributed MCP runtime with Claude Code continuation support is also available through the public [`@somacheck/vibecheck`](https://www.npmjs.com/package/@somacheck/vibecheck) package.
 
-## Install the Claude skill
+## Install the Claude skill and connector
 
 ```text
 claude plugin marketplace add Sensie-agents/vibecheck
 claude plugin install vibecheck@somacheck
 ```
 
-## Connect the local MCP
+Installing the plugin also configures the `vibecheck` MCP connector, pointed at SomaCheck's hosted server (`https://mcp.somacheck.com/functions/v1/mcp`). Claude will prompt you to complete OAuth sign-in with your SomaCheck account on first use.
 
-Install the [SomaCheck public beta](https://testflight.apple.com/join/C4mAH3zz), then open **Settings > Agent > Connect your agent**. Run the one-time command shown there.
+Install the [SomaCheck public beta](https://testflight.apple.com/join/C4mAH3zz) and complete its in-app setup first, then ask: **Give me a SomaCheck vibecheck based on what you know about me.**
 
-For a local Claude Code session, the command has this shape:
+## Local MCP alternative
+
+For Claude Code sessions that want automatic continuation when a delayed phone result arrives, link the local npm package instead of the bundled hosted connector:
 
 ```text
-npx -y @somacheck/vibecheck@0.6.6 link <CODE> --client claude
+npx -y @somacheck/vibecheck@0.6.7 link <CODE> --client claude
 ```
 
-Restart Claude Code after setup, then ask: **Give me a SomaCheck vibecheck based on what you know about me.**
+Get `<CODE>` from SomaCheck's **Settings > Agent > Connect your agent**, then restart Claude Code.
 
 ## Documentation
 
-Setup, privacy, revocation, Claude.ai, Codex, and all six MCP tools are documented at [somacheck.com/docs/hosted-mcp](https://somacheck.com/docs/hosted-mcp).
+Full setup, the six MCP tools, revocation, and troubleshooting for Claude Code, Codex, and Claude.ai: [somacheck.com/docs](https://somacheck.com/docs) ([hosted MCP guide](https://somacheck.com/docs/hosted-mcp)).
 
 ## Privacy boundary
 
 Raw motion data and conversation history never cross this connection. A vibecheck applies only to the person using SomaCheck. It is a signal, not objective truth, a diagnosis, or a decision.
 
 SomaCheck is a general wellness tool. It is not a medical device and does not diagnose or treat any condition.
+
+Full privacy policy, including agent connections and data retention: [somacheck.com/privacy](https://somacheck.com/privacy).
 
 ## License
 
