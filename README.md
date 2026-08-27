@@ -13,7 +13,7 @@ claude plugin install vibecheck@somacheck
 
 Installing the plugin also configures the `vibecheck` MCP connector, pointed at SomaCheck's hosted server (`https://mcp.somacheck.com/functions/v1/mcp`). Claude will prompt you to complete OAuth sign-in with your SomaCheck account on first use.
 
-Install the [SomaCheck public beta](https://testflight.apple.com/join/C4mAH3zz) and complete its in-app setup first, then ask: **Give me a SomaCheck vibecheck based on what you know about me.**
+Install the [SomaCheck public beta](https://testflight.apple.com/join/C4mAH3zz) and complete its in-app setup first, then in the CLI or your agent's native app ask: **Give me a SomaCheck vibecheck based on what you know about me.**
 
 ## Local MCP alternative
 
