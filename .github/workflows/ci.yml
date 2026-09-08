@@ -1,0 +1,229 @@
+name: ci
+
+# Validates the public profile manifests this repo ships:
+#   - glama.json (Glama MCP registry metadata)
+#   - .mcp.json (Claude bundled MCP connector)
+#   - .claude-plugin/marketplace.json (Claude marketplace listing)
+#   - README.md, SKILL.md, LICENSE presence + LICENSE SPDX claim
+#   - README doctrine guard (no medical-device / diagnosis claim)
+#
+# Provides public CI evidence relevant to Glama's "CI status not available"
+# checklist item
+# (https://glama.ai/mcp/servers/Sensie-agents/vibecheck/score) without
+# introducing secrets or deployments. Its only network reads are the public
+# Glama schema and public npm latest metadata. It uploads only the downloaded
+# public schema as a short-lived GitHub Actions artifact.
+#
+# Triggered on push and pull_request. Safe to run from a fork: no secrets and
+# no deploys; the only upload is the public schema artifact described above.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  validate-manifests:
+    name: Validate public profile manifests
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install jsonschema (pinned)
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install "jsonschema==4.23.0"
+
+      - name: Fetch the Glama server.json schema
+        # The Glama schema is the same URL pinned by glama.json's $schema field.
+        # The runner must be able to reach glama.ai; if it cannot, this step
+        # fails fast and visibly (rather than silently substituting a stale copy).
+        run: |
+          set -euo pipefail
+          mkdir -p .ci
+          curl --fail --show-error --silent --location \
+               --max-time 15 \
+               --output .ci/glama-server.schema.json \
+               https://glama.ai/mcp/schemas/server.json
+          test -s .ci/glama-server.schema.json
+
+      - name: Validate glama.json against the Glama schema
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, pathlib, sys
+          import jsonschema
+
+          repo = pathlib.Path(".")
+          schema = json.loads((repo / ".ci/glama-server.schema.json").read_text())
+          manifest = json.loads((repo / "glama.json").read_text())
+
+          jsonschema.validate(instance=manifest, schema=schema)
+
+          maintainers = manifest.get("maintainers")
+          assert isinstance(maintainers, list) and maintainers, \
+              "glama.json maintainers must be a non-empty list"
+          assert "Sensie-agents" in maintainers, \
+              "glama.json maintainers must include 'Sensie-agents' (the repo org)"
+          assert manifest.get("$schema") == "https://glama.ai/mcp/schemas/server.json", \
+              "glama.json $schema must exactly match the official Glama schema URL"
+
+          print("glama.json: VALID against", schema.get("$id", "<no $id>"))
+          print("glama.json: maintainers =", maintainers)
+          PY
+
+      - name: Validate .mcp.json shape
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, pathlib, sys, urllib.parse
+          repo = pathlib.Path(".")
+          cfg = json.loads((repo / ".mcp.json").read_text())
+          assert "mcpServers" in cfg, ".mcp.json must declare mcpServers"
+          servers = cfg["mcpServers"]
+          assert "vibecheck" in servers, ".mcp.json must expose a 'vibecheck' server"
+          entry = servers["vibecheck"]
+          assert entry.get("type") == "http", "vibecheck connector must be type=http"
+          url = entry.get("url", "")
+          parsed = urllib.parse.urlsplit(url)
+          assert parsed.scheme == "https", "vibecheck connector scheme must be https"
+          assert parsed.hostname == "mcp.somacheck.com", \
+              "vibecheck connector host must be mcp.somacheck.com"
+          assert parsed.path == "/functions/v1/mcp", \
+              "vibecheck connector path must be /functions/v1/mcp"
+          assert parsed.username is None and parsed.password is None, \
+              "vibecheck connector must not contain URL userinfo"
+          assert not parsed.query and not parsed.fragment, \
+              "vibecheck connector must not contain query or fragment"
+          assert parsed.port is None, \
+              "vibecheck connector must use the default HTTPS port"
+          print(".mcp.json: VALID; vibecheck ->", url)
+          PY
+
+      - name: Validate .claude-plugin/marketplace.json shape
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, pathlib
+          repo = pathlib.Path(".")
+          mp = json.loads((repo / ".claude-plugin/marketplace.json").read_text())
+          assert mp.get("name"), "marketplace.json must have a name"
+          assert mp.get("owner"), "marketplace.json must have an owner"
+          plugins = mp.get("plugins", [])
+          assert any(p.get("name") == "vibecheck" for p in plugins), \
+              "marketplace.json must list a 'vibecheck' plugin"
+          v = next(p for p in plugins if p.get("name") == "vibecheck")
+          assert v.get("source") == ".", "vibecheck plugin must source from '.' (this repo)"
+          assert v.get("version"), "vibecheck plugin must declare a version"
+          print("marketplace.json: VALID; vibecheck plugin version =", v["version"])
+          PY
+
+      - name: Validate required files and LICENSE SPDX
+        run: |
+          set -euo pipefail
+          for f in README.md SKILL.md LICENSE glama.json .mcp.json \
+                   .claude-plugin/marketplace.json; do
+            if [ ! -s "$f" ]; then
+              echo "::error file=$f::required file missing or empty"
+              exit 1
+            fi
+          done
+          # README must not be a stub.
+          wc -l README.md | awk '{ if ($1 < 10) { print "::error file=README.md::README too short (" $1 " lines)"; exit 1 } }'
+
+          # LICENSE must claim MIT (Glama reads spdx_id from the GitHub API;
+          # the README/LICENSE text must agree so the badge is honest). Accept
+          # either the standard full-text MIT permission line OR an explicit
+          # SPDX-License-Identifier header; both are sufficient for Glama's
+          # MIT detection and one of them must be present.
+          if ! grep -qiE 'mit license|Permission is hereby granted, free of charge' LICENSE; then
+            echo "::error file=LICENSE::LICENSE does not appear to be MIT"
+            exit 1
+          fi
+          if ! grep -qiE 'spdx-license-identifier:[[:space:]]*MIT' LICENSE; then
+            echo "::warning file=LICENSE::LICENSE has no SPDX-License-Identifier: MIT header (GitHub still detects MIT from full-text, so this is informational only)"
+          fi
+
+          echo "All required files present; LICENSE text matches MIT."
+
+      - name: Guard the README against forbidden medical claims
+        run: |
+          set -euo pipefail
+          # The README must contain the required negation so Glama and humans
+          # can verify the claim "is not a medical device / does not diagnose".
+          grep -qi "is not a medical device" README.md \
+            || { echo "::error file=README.md::README missing 'is not a medical device'"; exit 1; }
+          grep -qi "does not diagnose" README.md \
+            || { echo "::error file=README.md::README missing 'does not diagnose'"; exit 1; }
+          # README must describe a signal, not truth/authorization.
+          grep -qi "signal" README.md \
+            || { echo "::error file=README.md::README must describe vibecheck as a signal"; exit 1; }
+          grep -qi "you remain the authority\|you are the authority\|the person remains the authority" README.md \
+            || { echo "::error file=README.md::README must state the human remains the authority"; exit 1; }
+          # README must NOT claim a specific Glama percentage or score; if a
+          # future contributor adds such a claim, this guard fails fast.
+          if grep -qiE 'glama.{0,20}(100|[0-9]{2,3}\s?%|percent)' README.md; then
+            echo "::error file=README.md::README must not claim a Glama score or percentage"
+            exit 1
+          fi
+          if grep -qiE 'in tune|something.?s asking for attention|\bflow\b|\bblocked\b' README.md; then
+            echo "::error file=README.md::README contains retired outcome language"
+            exit 1
+          fi
+          echo "README doctrine guard: PASS"
+
+      - name: Validate independent plugin and npm versions
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, pathlib, re, urllib.request
+          repo = pathlib.Path(".")
+          mp = json.loads((repo / ".claude-plugin/marketplace.json").read_text())
+          plugin_version = next(
+              p["version"] for p in mp["plugins"] if p["name"] == "vibecheck"
+          )
+          assert re.fullmatch(r"\d+\.\d+\.\d+", plugin_version), \
+              "Claude plugin version must be SemVer"
+
+          readme = (repo / "README.md").read_text()
+          m = re.search(r"@somacheck/vibecheck@(\d+\.\d+\.\d+)", readme)
+          assert m, "README must pin the public npm runtime version"
+          readme_npm_version = m.group(1)
+          with urllib.request.urlopen(
+              "https://registry.npmjs.org/@somacheck/vibecheck/latest",
+              timeout=15,
+          ) as response:
+              public_npm_version = json.load(response)["version"]
+          assert readme_npm_version == public_npm_version, (
+              f"README pins npm runtime {readme_npm_version}, but npm latest is "
+              f"{public_npm_version}"
+          )
+          print(
+              "versions: Claude plugin",
+              plugin_version,
+              "(independent); npm runtime",
+              readme_npm_version,
+              "(matches public latest)",
+          )
+          PY
+
+      - name: Upload schema for debugging (no secrets)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: glama-server-schema
+          path: .ci/glama-server.schema.json
+          # retention is short by default; nothing sensitive in the schema
+          retention-days: 7
