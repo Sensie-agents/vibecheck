@@ -233,6 +233,9 @@ jobs:
           )
           PY
 
+      - name: Guard Claude hosted and local profile paths
+        run: node .github/scripts/verify-claude-profile.mjs
+
       - name: Install and probe the locked local MCP runtime
         run: |
           set -euo pipefail
