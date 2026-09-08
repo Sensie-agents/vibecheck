@@ -4,15 +4,17 @@ name: ci
 #   - glama.json (Glama MCP registry metadata)
 #   - .mcp.json (Claude bundled MCP connector)
 #   - .claude-plugin/marketplace.json (Claude marketplace listing)
+#   - Dockerfile + locked local runtime wrapper (Glama build/introspection)
 #   - README.md, SKILL.md, LICENSE presence + LICENSE SPDX claim
 #   - README doctrine guard (no medical-device / diagnosis claim)
 #
 # Provides public CI evidence relevant to Glama's "CI status not available"
 # checklist item
 # (https://glama.ai/mcp/servers/Sensie-agents/vibecheck/score) without
-# introducing secrets or deployments. Its only network reads are the public
-# Glama schema and public npm latest metadata. It uploads only the downloaded
-# public schema as a short-lived GitHub Actions artifact.
+# introducing secrets or deployments. Its network reads are the public Glama
+# schema, public npm metadata/packages, and the digest-pinned official Node
+# base image. It uploads only the downloaded public schema as a short-lived
+# GitHub Actions artifact.
 #
 # Triggered on push and pull_request. Safe to run from a fork: no secrets and
 # no deploys; the only upload is the public schema artifact described above.
@@ -134,7 +136,8 @@ jobs:
         run: |
           set -euo pipefail
           for f in README.md SKILL.md LICENSE glama.json .mcp.json \
-                   .claude-plugin/marketplace.json; do
+                   .claude-plugin/marketplace.json Dockerfile package.json \
+                   package-lock.json .github/scripts/verify-mcp-runtime.mjs; do
             if [ ! -s "$f" ]; then
               echo "::error file=$f::required file missing or empty"
               exit 1
@@ -210,6 +213,17 @@ jobs:
               f"README pins npm runtime {readme_npm_version}, but npm latest is "
               f"{public_npm_version}"
           )
+          wrapper = json.loads((repo / "package.json").read_text())
+          assert wrapper.get("private") is True, "Glama wrapper package must stay private"
+          assert wrapper.get("license") == "MIT", "Glama wrapper must be MIT"
+          wrapper_version = wrapper.get("dependencies", {}).get("@somacheck/vibecheck")
+          assert wrapper_version == public_npm_version, (
+              f"Glama wrapper pins {wrapper_version}, but npm latest is {public_npm_version}"
+          )
+          dockerfile = (repo / "Dockerfile").read_text()
+          assert "node:22-alpine@sha256:" in dockerfile, "Docker base image must be digest-pinned"
+          assert "USER node" in dockerfile, "Glama runtime must not run as root"
+          assert "--ignore-scripts" in dockerfile, "container install must disable lifecycle scripts"
           print(
               "versions: Claude plugin",
               plugin_version,
@@ -218,6 +232,20 @@ jobs:
               "(matches public latest)",
           )
           PY
+
+      - name: Install and probe the locked local MCP runtime
+        run: |
+          set -euo pipefail
+          npm ci --omit=dev --ignore-scripts
+          node .github/scripts/verify-mcp-runtime.mjs \
+            ./node_modules/.bin/vibecheck
+
+      - name: Build and probe the Glama container
+        run: |
+          set -euo pipefail
+          docker build --tag somacheck-vibecheck:ci .
+          node .github/scripts/verify-mcp-runtime.mjs \
+            docker run --rm -i somacheck-vibecheck:ci
 
       - name: Upload schema for debugging (no secrets)
         if: always()

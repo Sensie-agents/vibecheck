@@ -1,0 +1,9 @@
+.git
+.github
+.claude-plugin
+.ci
+.mcp.json
+node_modules
+README.md
+SKILL.md
+glama.json

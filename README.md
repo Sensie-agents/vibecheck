@@ -6,7 +6,7 @@ Vibecheck lets an AI agent, with your consent, send one first-person statement t
 
 This public repository contains the **Claude marketplace manifest** (`.claude-plugin/marketplace.json`), the **agent skill** (`SKILL.md`), and a **bundled connector** (`.mcp.json`) that points an MCP-compatible client at SomaCheck's already-deployed hosted MCP server at `https://mcp.somacheck.com/functions/v1/mcp`.
 
-The vibecheck MCP server itself is **not** built from this repo. The remote server is deployed and operated separately by Sensie. The local MCP runtime, with Claude Code continuation support, is distributed as the public [`@somacheck/vibecheck`](https://www.npmjs.com/package/@somacheck/vibecheck) npm package. Its npm metadata identifies the canonical source tree inside Sensie's main repository; this public distribution repo contains only the files described below.
+The hosted vibecheck MCP server itself is **not** built from this repo. It is deployed and operated separately by Sensie. The local MCP runtime, with Claude Code continuation support, is distributed under MIT as the public [`@somacheck/vibecheck`](https://www.npmjs.com/package/@somacheck/vibecheck) npm package. This repository's Dockerfile assembles that exact, locked local stdio runtime for Glama's isolated build, security scan, and tool-schema introspection. It does not contain the server source and does not prove the hosted OAuth deployment.
 
 Concretely:
 
@@ -14,7 +14,8 @@ Concretely:
 - `.claude-plugin/marketplace.json` — Claude marketplace listing for `claude plugin marketplace add …`.
 - `.mcp.json` — bundled MCP connector pointing at the hosted MCP.
 - `glama.json` — declares maintainers for the Glama MCP registry; see [Glama docs](https://glama.ai/mcp/methodology).
-- `.github/workflows/ci.yml` — public CI that validates `glama.json` against the official Glama schema, structurally checks `.mcp.json` and `.claude-plugin/marketplace.json`, and guards the README doctrine and version drift. It uses no secrets and performs no builds or publication.
+- `Dockerfile`, `package.json`, and `package-lock.json` — reproducible, non-root Glama image for the local stdio runtime. The image contains no SomaCheck account credential.
+- `.github/workflows/ci.yml` — public CI that validates the manifests, builds and probes the Glama image, and guards the README doctrine and version drift. It uses no secrets and performs no deployment or publication.
 
 [![validate manifests](https://github.com/Sensie-agents/vibecheck/actions/workflows/ci.yml/badge.svg)](https://github.com/Sensie-agents/vibecheck/actions/workflows/ci.yml)
 
@@ -34,10 +35,22 @@ Install the [SomaCheck public beta](https://testflight.apple.com/join/C4mAH3zz) 
 For Claude Code sessions that want automatic continuation when a delayed phone result arrives, link the local npm package instead of the bundled hosted connector:
 
 ```text
-npx -y @somacheck/vibecheck@0.6.10 link <CODE> --client claude
+npx -y @somacheck/vibecheck@0.6.11 link <CODE> --client claude
 ```
 
 Get `<CODE>` from SomaCheck's **Settings > Agent > Connect your agent**, then restart Claude Code.
+
+### Glama/local container boundary
+
+The Glama release represents the **local stdio runtime**, not the separately hosted OAuth connector. It can be started without a credential so Glama can inspect its six tool schemas. Actual tool calls remain account-bound and fail with setup guidance until the person has linked SomaCheck.
+
+For a single person's self-hosted local use, mount that person's existing link configuration read-only:
+
+```text
+docker run --rm -i -v "$HOME/.sensie:/home/node/.sensie:ro" somacheck-vibecheck:0.6.11
+```
+
+Never bake a pairing code, token, or `config.json` into the image. Do not share one mounted configuration between people or use this image as a multi-tenant service. Glama schema discovery alone is not evidence of an authenticated phone round trip.
 
 ## Documentation
 
