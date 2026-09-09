@@ -36,7 +36,9 @@ const readme = readText("README.md");
 assert.match(readme, new RegExp(`@somacheck/vibecheck@${runtimeVersion.replaceAll(".", "\\.")}`),
   "README local install must pin the reviewed runtime");
 assert.match(readme, /claude plugin install vibecheck@somacheck/, "README must retain the hosted plugin install");
-assert.match(readme, /## Local MCP alternative/, "README must label the local path separately");
+assert.match(readme, /## Claude Code primary local Channel/, "README must identify the primary Claude Code Channel path");
+assert.match(readme, /--dangerously-load-development-channels server:vibecheck/,
+  "README must include the research-preview Channel launch command");
 
 const dockerfile = readText("Dockerfile");
 assert.match(dockerfile, new RegExp(`org\\.opencontainers\\.image\\.version=\\"${runtimeVersion.replaceAll(".", "\\.")}\\"`),
