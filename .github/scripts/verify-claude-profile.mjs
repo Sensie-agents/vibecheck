@@ -9,36 +9,57 @@ const readText = (path) => readFileSync(join(root, path), "utf8");
 const wrapper = readJson("package.json");
 const lockfile = readJson("package-lock.json");
 const marketplace = readJson(".claude-plugin/marketplace.json");
-const hostedConfig = readJson(".mcp.json");
+const manifest = readJson(".claude-plugin/plugin.json");
+const mcpConfig = readJson(".mcp.json");
 const runtimeVersion = wrapper.dependencies?.["@somacheck/vibecheck"];
 const plugin = marketplace.plugins?.find(({ name }) => name === "vibecheck");
-const hostedServer = hostedConfig.mcpServers?.vibecheck;
+const channelServer = mcpConfig.mcpServers?.vibecheck;
 
 assert.match(runtimeVersion ?? "", /^\d+\.\d+\.\d+$/, "runtime must pin an exact SemVer");
 assert.equal(wrapper.private, true, "the Glama wrapper must remain private");
 assert.equal(plugin?.source, ".", "the public Claude plugin must source from this repository");
-assert.equal(plugin?.version, runtimeVersion, "Claude metadata and local runtime must share the reviewed version");
+assert.equal(plugin?.version, manifest.version, "marketplace and plugin manifest versions must agree");
 assert.equal(lockfile.packages?.[""]?.dependencies?.["@somacheck/vibecheck"], runtimeVersion,
   "package-lock root dependency must match the wrapper");
 assert.equal(lockfile.packages?.[`node_modules/@somacheck/vibecheck`]?.version, runtimeVersion,
   "package-lock installed runtime must match the wrapper");
 
-// The marketplace install is the hosted HTTP path. The local npm alternative
-// is intentionally separate because it is the only path with Claude Code
-// continuation support; neither path may silently replace the other.
-assert.equal(hostedServer?.type, "http", "the bundled Claude connector must be hosted HTTP");
-assert.equal(hostedServer?.url, "https://mcp.somacheck.com/functions/v1/mcp",
-  "the hosted connector must use the canonical remote");
-assert.equal("command" in (hostedServer ?? {}), false, "hosted connector must not become a local command");
-assert.equal("args" in (hostedServer ?? {}), false, "hosted connector must not become a local command");
+assert.deepEqual(manifest.channels, [{ server: "vibecheck" }],
+  "the plugin must bind its vibecheck MCP server as a Channel");
+assert.equal(channelServer?.command, "npx", "the Channel must use the portable npx launcher");
+assert.deepEqual(channelServer?.args, [
+  "-y",
+  `@somacheck/vibecheck@${runtimeVersion}`,
+  "serve",
+  "--client",
+  "claude",
+  "--channel",
+], "the Channel must launch the exact pinned Claude runtime");
+assert.equal("url" in (channelServer ?? {}), false,
+  "the Channel plugin must not silently fall back to the hosted OAuth connector");
+
+const skill = readText("SKILL.md");
+for (const tool of [
+  "get_vibecheck_context",
+  "get_vibecheck_status",
+  "get_vibecheck_result",
+  "request_vibecheck",
+]) {
+  assert.match(skill, new RegExp(`mcp__plugin_vibecheck_vibecheck__${tool}`),
+    `skill must allow the plugin-scoped ${tool} tool`);
+}
+assert.doesNotMatch(skill, /mcp__vibecheck__/,
+  "public Claude plugin skill must not retain direct-server tool names");
 
 const readme = readText("README.md");
 assert.match(readme, new RegExp(`@somacheck/vibecheck@${runtimeVersion.replaceAll(".", "\\.")}`),
   "README local install must pin the reviewed runtime");
-assert.match(readme, /claude plugin install vibecheck@somacheck/, "README must retain the hosted plugin install");
-assert.match(readme, /## Claude Code primary local Channel/, "README must identify the primary Claude Code Channel path");
-assert.match(readme, /--dangerously-load-development-channels server:vibecheck/,
-  "README must include the research-preview Channel launch command");
+assert.match(readme, /claude plugin install vibecheck@somacheck/, "README must retain the plugin install");
+assert.match(readme, /## Link SomaCheck and start the Channel/, "README must identify the primary Claude Code Channel path");
+assert.match(readme, /claude --channels plugin:vibecheck@somacheck/,
+  "README must include the approved Channel launch command");
+assert.match(readme, /claude mcp remove --scope user vibecheck/,
+  "README must prevent a duplicate direct MCP registration during the 0.6.12 migration");
 
 const dockerfile = readText("Dockerfile");
 assert.match(dockerfile, new RegExp(`org\\.opencontainers\\.image\\.version=\\"${runtimeVersion.replaceAll(".", "\\.")}\\"`),
@@ -48,6 +69,8 @@ assert.match(dockerfile, /ENTRYPOINT \["\.\/node_modules\/\.bin\/vibecheck"\]/,
 
 for (const [path, contents] of [
   [".claude-plugin/marketplace.json", readText(".claude-plugin/marketplace.json")],
+  [".claude-plugin/plugin.json", readText(".claude-plugin/plugin.json")],
+  [".mcp.json", readText(".mcp.json")],
   ["package.json", readText("package.json")],
   ["package-lock.json", readText("package-lock.json")],
   ["README.md", readme],
