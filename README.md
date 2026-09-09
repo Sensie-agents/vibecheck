@@ -19,7 +19,7 @@ Concretely:
 
 [![validate manifests](https://github.com/Sensie-agents/vibecheck/actions/workflows/ci.yml/badge.svg)](https://github.com/Sensie-agents/vibecheck/actions/workflows/ci.yml)
 
-## Install the Claude skill and connector
+## Install the hosted Claude connector
 
 ```text
 claude plugin marketplace add Sensie-agents/vibecheck
@@ -30,15 +30,23 @@ Installing the plugin also configures the `vibecheck` MCP connector, pointed at 
 
 Install the [SomaCheck public beta](https://testflight.apple.com/join/C4mAH3zz) and complete its in-app setup first, then in the CLI or your agent's native app ask: **Give me a SomaCheck vibecheck based on what you know about me.**
 
-## Local MCP alternative
+## Claude Code primary local Channel
 
-For Claude Code sessions that want automatic continuation when a delayed phone result arrives, link the local npm package instead of the bundled hosted connector:
+For Claude Code, use the local Channel so a delayed phone result enters the
+same open conversation and Claude can continue without another typed message.
+Link the local npm package instead of the bundled hosted connector:
 
 ```text
-npx -y @somacheck/vibecheck@0.6.11 link <CODE> --client claude
+npx -y @somacheck/vibecheck@0.6.12 link <CODE> --client claude
+claude --dangerously-load-development-channels server:vibecheck
 ```
 
-Get `<CODE>` from SomaCheck's **Settings > Agent > Connect your agent**, then restart Claude Code.
+Get `<CODE>` from SomaCheck's **Settings > Agent > Connect your agent**. During
+Anthropic's Channels research preview, this direct server requires the
+development flag. Packaging the Channel itself into this installable plugin and
+obtaining Anthropic or organization allowlisting are separate distribution
+gates. Keep the session open; a closed session cannot receive Channel events.
+The stable request handle remains the recovery path if an event is not delivered.
 
 ### Glama/local container boundary
 
@@ -47,7 +55,7 @@ The Glama release represents the **local stdio runtime**, not the separately hos
 For a single person's self-hosted local use, mount that person's existing link configuration read-only:
 
 ```text
-docker run --rm -i -v "$HOME/.sensie:/home/node/.sensie:ro" somacheck-vibecheck:0.6.11
+docker run --rm -i -v "$HOME/.sensie:/home/node/.sensie:ro" somacheck-vibecheck:0.6.12
 ```
 
 Never bake a pairing code, token, or `config.json` into the image. Do not share one mounted configuration between people or use this image as a multi-tenant service. Glama schema discovery alone is not evidence of an authenticated phone round trip.

@@ -11,7 +11,7 @@
       "name": "vibecheck",
       "source": ".",
       "description": "Teach Claude when to request or offer a consented SomaCheck vibecheck.",
-      "version": "0.6.11",
+      "version": "0.6.12",
       "author": {
         "name": "Sensie",
         "email": "agents@joinsensie.com"
