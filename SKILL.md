@@ -2,7 +2,7 @@
 name: vibecheck
 description: Ask your person for a SomaCheck vibecheck when it would help.
 user-invocable: true
-allowed-tools: mcp__vibecheck__get_vibecheck_context mcp__vibecheck__get_vibecheck_status mcp__vibecheck__get_vibecheck_result mcp__vibecheck__request_vibecheck
+allowed-tools: mcp__plugin_vibecheck_vibecheck__get_vibecheck_context mcp__plugin_vibecheck_vibecheck__get_vibecheck_status mcp__plugin_vibecheck_vibecheck__get_vibecheck_result mcp__plugin_vibecheck_vibecheck__request_vibecheck
 ---
 
 # Vibecheck

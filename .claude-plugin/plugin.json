@@ -1,0 +1,24 @@
+{
+  "name": "vibecheck",
+  "description": "Let Claude offer a consented SomaCheck vibecheck and continue when the phone result arrives.",
+  "version": "0.6.13",
+  "author": {
+    "name": "Sensie",
+    "email": "agents@joinsensie.com"
+  },
+  "homepage": "https://somacheck.com/docs/hosted-mcp",
+  "repository": "https://github.com/Sensie-agents/vibecheck",
+  "license": "MIT",
+  "keywords": [
+    "vibecheck",
+    "somacheck",
+    "decision-support",
+    "mcp",
+    "channel"
+  ],
+  "channels": [
+    {
+      "server": "vibecheck"
+    }
+  ]
+}

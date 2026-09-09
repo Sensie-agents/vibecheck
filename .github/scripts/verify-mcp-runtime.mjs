@@ -5,6 +5,7 @@ import { join } from "node:path";
 
 const command = process.argv[2];
 const args = process.argv.slice(3);
+const expectClaudeChannel = args.includes("--channel");
 
 if (!command) {
   throw new Error("usage: node verify-mcp-runtime.mjs <command> [args...]");
@@ -52,13 +53,25 @@ function pass() {
   child.stdin.end();
   child.kill("SIGTERM");
   rmSync(isolatedHome, { recursive: true, force: true });
-  process.stdout.write("GLAMA MCP RUNTIME SMOKE: PASS\n");
+  process.stdout.write(expectClaudeChannel
+    ? "CLAUDE CHANNEL MCP RUNTIME SMOKE: PASS\n"
+    : "GLAMA MCP RUNTIME SMOKE: PASS\n");
 }
 
 function handle(message) {
   if (message.id === 1) {
     if (!message.result?.serverInfo?.name) {
       fail("initialize did not return serverInfo");
+      return;
+    }
+    if (expectClaudeChannel
+      && message.result?.capabilities?.experimental?.["claude/channel"] === undefined) {
+      fail("initialize did not advertise experimental claude/channel capability");
+      return;
+    }
+    if (!expectClaudeChannel
+      && message.result?.capabilities?.experimental?.["claude/channel"] !== undefined) {
+      fail("ordinary runtime unexpectedly advertised claude/channel capability");
       return;
     }
     send({ jsonrpc: "2.0", method: "notifications/initialized" });

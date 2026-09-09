@@ -2,7 +2,7 @@ name: ci
 
 # Validates the public profile manifests this repo ships:
 #   - glama.json (Glama MCP registry metadata)
-#   - .mcp.json (Claude bundled MCP connector)
+#   - .mcp.json + plugin.json (Claude bundled Channel server)
 #   - .claude-plugin/marketplace.json (Claude marketplace listing)
 #   - Dockerfile + locked local runtime wrapper (Glama build/introspection)
 #   - README.md, SKILL.md, LICENSE presence + LICENSE SPDX claim
@@ -90,28 +90,23 @@ jobs:
         run: |
           set -euo pipefail
           python - <<'PY'
-          import json, pathlib, sys, urllib.parse
+          import json, pathlib
           repo = pathlib.Path(".")
           cfg = json.loads((repo / ".mcp.json").read_text())
           assert "mcpServers" in cfg, ".mcp.json must declare mcpServers"
           servers = cfg["mcpServers"]
           assert "vibecheck" in servers, ".mcp.json must expose a 'vibecheck' server"
           entry = servers["vibecheck"]
-          assert entry.get("type") == "http", "vibecheck connector must be type=http"
-          url = entry.get("url", "")
-          parsed = urllib.parse.urlsplit(url)
-          assert parsed.scheme == "https", "vibecheck connector scheme must be https"
-          assert parsed.hostname == "mcp.somacheck.com", \
-              "vibecheck connector host must be mcp.somacheck.com"
-          assert parsed.path == "/functions/v1/mcp", \
-              "vibecheck connector path must be /functions/v1/mcp"
-          assert parsed.username is None and parsed.password is None, \
-              "vibecheck connector must not contain URL userinfo"
-          assert not parsed.query and not parsed.fragment, \
-              "vibecheck connector must not contain query or fragment"
-          assert parsed.port is None, \
-              "vibecheck connector must use the default HTTPS port"
-          print(".mcp.json: VALID; vibecheck ->", url)
+          assert entry.get("command") == "npx", "vibecheck Channel must launch with npx"
+          assert entry.get("args") == [
+              "-y", "@somacheck/vibecheck@0.6.12", "serve",
+              "--client", "claude", "--channel",
+          ], "vibecheck Channel command must be exact and pinned"
+          assert "url" not in entry, "Channel plugin must not use the hosted HTTP connector"
+          manifest = json.loads((repo / ".claude-plugin/plugin.json").read_text())
+          assert manifest.get("channels") == [{"server": "vibecheck"}], \
+              "plugin manifest must bind the vibecheck MCP server as a Channel"
+          print("Claude Channel manifest: VALID")
           PY
 
       - name: Validate .claude-plugin/marketplace.json shape
@@ -136,8 +131,9 @@ jobs:
         run: |
           set -euo pipefail
           for f in README.md SKILL.md LICENSE glama.json .mcp.json \
-                   .claude-plugin/marketplace.json Dockerfile package.json \
-                   package-lock.json .github/scripts/verify-mcp-runtime.mjs; do
+                   .claude-plugin/plugin.json .claude-plugin/marketplace.json \
+                   Dockerfile package.json package-lock.json \
+                   .github/scripts/verify-mcp-runtime.mjs; do
             if [ ! -s "$f" ]; then
               echo "::error file=$f::required file missing or empty"
               exit 1
@@ -242,6 +238,12 @@ jobs:
           npm ci --omit=dev --ignore-scripts
           node .github/scripts/verify-mcp-runtime.mjs \
             ./node_modules/.bin/vibecheck
+
+      - name: Probe the Claude Channel runtime
+        run: |
+          set -euo pipefail
+          node .github/scripts/verify-mcp-runtime.mjs \
+            ./node_modules/.bin/vibecheck serve --client claude --channel
 
       - name: Build and probe the Glama container
         run: |

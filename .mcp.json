@@ -1,8 +1,15 @@
 {
   "mcpServers": {
     "vibecheck": {
-      "type": "http",
-      "url": "https://mcp.somacheck.com/functions/v1/mcp"
+      "command": "npx",
+      "args": [
+        "-y",
+        "@somacheck/vibecheck@0.6.12",
+        "serve",
+        "--client",
+        "claude",
+        "--channel"
+      ]
     }
   }
 }
