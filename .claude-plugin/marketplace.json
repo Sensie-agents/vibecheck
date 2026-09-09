@@ -5,12 +5,12 @@
     "email": "agents@joinsensie.com",
     "url": "https://somacheck.com"
   },
-  "description": "The public SomaCheck vibecheck skill for Claude.",
+  "description": "Body language for AI agents, on your terms.",
   "plugins": [
     {
       "name": "vibecheck",
       "source": ".",
-      "description": "Teach Claude when to request or offer a consented SomaCheck vibecheck.",
+      "description": "Turn a consented three-second phone gesture into context Claude can use, while you remain the authority.",
       "version": "0.6.13",
       "author": {
         "name": "Sensie",

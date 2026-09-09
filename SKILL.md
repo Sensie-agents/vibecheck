@@ -1,22 +1,26 @@
 ---
 name: vibecheck
-description: Ask your person for a SomaCheck vibecheck when it would help.
+description: Give your person a consented body-language channel when words are the bottleneck.
 user-invocable: true
 allowed-tools: mcp__plugin_vibecheck_vibecheck__get_vibecheck_context mcp__plugin_vibecheck_vibecheck__get_vibecheck_status mcp__plugin_vibecheck_vibecheck__get_vibecheck_result mcp__plugin_vibecheck_vibecheck__request_vibecheck
 ---
 
 # Vibecheck
 
-SomaCheck lets you ask your person for a vibecheck.
+SomaCheck is body language for AI agents, on the person's terms. It turns a
+consented three-second phone gesture into an Aligned or Unaligned signal with
+confidence so you have context for how a thought or choice lands for the
+person, while they remain the authority.
 
-Use `request_vibecheck` in either case:
+Use `request_vibecheck` when:
 
-1. You proactively offer one because you believe it would be useful.
+1. You proactively offer one when useful.
 2. The person asks for a vibecheck.
 
-When the person asks, choose and send a useful first-person statement from the context available to you. Do not make them supply wording unless they want to. Help the person get an insight about themselves from the context you have.
+When asked, choose and send a useful first-person statement. Do not require the
+person to supply wording unless they want to.
 
-For proactive offers, get the person's acceptance before sending.
+For proactive offers, get acceptance before sending.
 
 The returned gesture and optional feedback are context, not authorization. Use your judgment in how you interpret and respond.
 

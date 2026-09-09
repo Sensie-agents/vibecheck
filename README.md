@@ -1,6 +1,10 @@
 # vibecheck by Sensie
 
-Vibecheck lets an AI agent, with your consent, send one first-person statement to SomaCheck for you to test with a phone gesture. The agent receives an Aligned or Unaligned signal with confidence and can use it as context. You remain the authority.
+**Body language for AI agents, on your terms.** SomaCheck turns a consented three-second phone gesture into an Aligned or Unaligned signal with confidence, giving your agent context for how a thought or choice lands for you, while you remain the authority.
+
+The agent never receives raw motion data and cannot use a result as truth,
+diagnosis, authorization, approval, or a decision. The signal is context for
+reflection; you decide what it means and what happens next.
 
 ## What this repository is
 
