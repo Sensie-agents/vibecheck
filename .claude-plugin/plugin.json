@@ -1,6 +1,6 @@
 {
   "name": "vibecheck",
-  "description": "Let Claude offer a consented SomaCheck vibecheck and continue when the phone result arrives.",
+  "description": "Body language for AI agents, on your terms. SomaCheck gives Claude a consented Aligned or Unaligned signal with confidence, while you remain the authority.",
   "version": "0.6.13",
   "author": {
     "name": "Sensie",
