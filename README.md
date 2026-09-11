@@ -6,6 +6,24 @@ The agent never receives raw motion data and cannot use a result as truth,
 diagnosis, authorization, approval, or a decision. The signal is context for
 reflection; you decide what it means and what happens next.
 
+## Tools
+
+The vibecheck MCP server exposes exactly six tools. Only `request_vibecheck`
+creates an immediate phone ask; `post_vibecheck_statement` only stocks the
+optional feed when you ask it to. Raw motion and private conversation
+history never reach the agent through this connector, and a database state
+is never proof of phone display. The signal is context, not truth,
+diagnosis, authorization, approval, or a decision.
+
+| Tool | Purpose |
+| --- | --- |
+| `request_vibecheck` | Send one consented first-person statement to your phone for an immediate vibecheck. The only tool that creates an immediate phone ask; waits up to 45 seconds for the answer. The result is context, not authorization. |
+| `get_vibecheck_result` | Read one exact vibecheck by `request_id`. Use this to keep polling an immediate ask about every 15 seconds until the status is answered or expired. |
+| `get_vibecheck_context` | Read your recent completed check-ins, newest first, so the agent can use prior outcomes as contextual signals. |
+| `get_vibecheck_status` | Read the SomaCheck reflection-feed status before optional posting. Database state does not verify phone display. Use `get_vibecheck_context` for recent completed check-ins. |
+| `post_vibecheck_statement` | Stock the optional SomaCheck feed with up to three personalized reflections for the person to consider later. Optional feed stock only; this is not an immediate phone ask and does not verify delivery. |
+| `share_somacheck_context` | Share 1-20 concise, user-authorized context observations so SomaCheck can prepare richer propositions. Send derived summaries only; never raw conversation text, photos, credentials, identifiers, or diagnostic claims. |
+
 ## What this repository is
 
 This public repository contains the **Claude marketplace manifest** (`.claude-plugin/marketplace.json`), the **Claude plugin manifest** (`.claude-plugin/plugin.json`), the **agent skill** (`SKILL.md`), and a **bundled local Channel server** (`.mcp.json`). The Channel lets an authorized phone result enter the same open Claude Code conversation so Claude can continue without another typed message.

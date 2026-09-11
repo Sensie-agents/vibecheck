@@ -134,7 +134,10 @@ jobs:
           for f in README.md SKILL.md LICENSE glama.json .mcp.json \
                    .claude-plugin/plugin.json .claude-plugin/marketplace.json \
                    Dockerfile package.json package-lock.json \
-                   .github/scripts/verify-mcp-runtime.mjs; do
+                   .github/scripts/verify-mcp-runtime.mjs \
+                   .github/scripts/verify-readme-tools-index.mjs \
+                   .github/scripts/verify-claude-profile.mjs \
+                   .github/scripts/fixtures/expected-tools.json; do
             if [ ! -s "$f" ]; then
               echo "::error file=$f::required file missing or empty"
               exit 1
@@ -234,6 +237,9 @@ jobs:
 
       - name: Guard Claude hosted and local profile paths
         run: node .github/scripts/verify-claude-profile.mjs
+
+      - name: Guard the public README tools index against drift
+        run: node .github/scripts/verify-readme-tools-index.mjs
 
       - name: Install and probe the locked local MCP runtime
         run: |
