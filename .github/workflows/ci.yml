@@ -98,8 +98,9 @@ jobs:
           assert "vibecheck" in servers, ".mcp.json must expose a 'vibecheck' server"
           entry = servers["vibecheck"]
           assert entry.get("command") == "npx", "vibecheck Channel must launch with npx"
+          runtime = json.loads((repo / "package.json").read_text())["dependencies"]["@somacheck/vibecheck"]
           assert entry.get("args") == [
-              "-y", "@somacheck/vibecheck@0.6.12", "serve",
+              "-y", f"@somacheck/vibecheck@{runtime}", "serve",
               "--client", "claude", "--channel",
           ], "vibecheck Channel command must be exact and pinned"
           assert "url" not in entry, "Channel plugin must not use the hosted HTTP connector"

@@ -58,8 +58,12 @@ assert.match(readme, /claude plugin install vibecheck@somacheck/, "README must r
 assert.match(readme, /## Link SomaCheck and start the Channel/, "README must identify the primary Claude Code Channel path");
 assert.match(readme, /claude --channels plugin:vibecheck@somacheck/,
   "README must include the approved Channel launch command");
-assert.match(readme, /claude mcp remove --scope user vibecheck/,
-  "README must prevent a duplicate direct MCP registration during the 0.6.12 migration");
+assert.match(readme, new RegExp(`@somacheck/vibecheck@${runtimeVersion.replaceAll(".", "\\.")} setup claude`),
+  "README must use the reviewed managed upgrade path");
+assert.match(readme, /autoUpdate: true/,
+  "README must explain native marketplace auto-updates");
+assert.doesNotMatch(readme, /claude mcp remove --scope user vibecheck/,
+  "README must not instruct unconditional removal of potentially custom user configuration");
 
 const dockerfile = readText("Dockerfile");
 assert.match(dockerfile, new RegExp(`org\\.opencontainers\\.image\\.version=\\"${runtimeVersion.replaceAll(".", "\\.")}\\"`),
