@@ -87,6 +87,19 @@ Never bake a pairing code, token, or `config.json` into the image. Do not share 
 
 ## Documentation
 
+### Cursor and Windsurf
+
+Use the [Cursor setup package](cursor/README.md) to add SomaCheck's hosted
+connection and skill to a project. Its installer previews changes, preserves
+existing configuration, and verifies the result. The
+[Windsurf / Cascade setup guide](windsurf/README.md) includes the native
+remote-server configuration.
+
+Both use your own SomaCheck OAuth connection and phone. These are developer
+preview packages; actual host OAuth and phone acceptance and marketplace
+listings remain to be verified. Claude Code Channels are a separate host
+capability.
+
 Full setup, the six MCP tools, revocation, and troubleshooting for Claude Code, Codex, and Claude.ai: [somacheck.com/docs](https://somacheck.com/docs) ([hosted MCP guide](https://somacheck.com/docs/hosted-mcp)).
 
 ## Privacy boundary

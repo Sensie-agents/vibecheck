@@ -1,0 +1,9 @@
+{
+  "name": "somacheck",
+  "description": "Body language for AI agents, on your terms. A consented SomaCheck signal for how a thought or choice lands.",
+  "version": "0.1.0",
+  "homepage": "https://somacheck.com/docs/hosted-mcp",
+  "repository": "https://github.com/Sensie-agents/vibecheck",
+  "license": "MIT",
+  "keywords": ["consent", "signal", "check-in", "mcp"]
+}

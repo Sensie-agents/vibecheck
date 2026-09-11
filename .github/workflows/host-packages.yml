@@ -1,0 +1,35 @@
+name: Host setup packages
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate Cursor manifest and reversible project installer
+        run: node --test cursor/scripts/*.test.mjs
+      - name: Verify the credential-free Windsurf endpoint matches Cursor
+        run: |
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';
+          import { readFileSync } from 'node:fs';
+          const cursor = JSON.parse(readFileSync('cursor/mcp.json', 'utf8'));
+          const windsurf = JSON.parse(readFileSync('windsurf/mcp_config.json', 'utf8'));
+          assert.equal(cursor.mcpServers.somacheck.url, 'https://mcp.somacheck.com/functions/v1/mcp');
+          assert.deepEqual(windsurf, {
+            mcpServers: { somacheck: { serverUrl: cursor.mcpServers.somacheck.url } },
+          });
+          console.log('Host configuration parity: PASS');
+          NODE
