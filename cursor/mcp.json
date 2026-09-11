@@ -1,0 +1,7 @@
+{
+  "mcpServers": {
+    "somacheck": {
+      "url": "https://mcp.somacheck.com/functions/v1/mcp"
+    }
+  }
+}
