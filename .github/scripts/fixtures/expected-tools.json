@@ -1,0 +1,8 @@
+[
+  "request_vibecheck",
+  "get_vibecheck_result",
+  "get_vibecheck_context",
+  "get_vibecheck_status",
+  "post_vibecheck_statement",
+  "share_somacheck_context"
+]
