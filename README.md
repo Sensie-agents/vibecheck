@@ -34,21 +34,28 @@ matches the route you choose.
   below, then launch Claude Code with the approved Channel command. Channels
   remain the preferred path whenever Anthropic has allowlisted
   `vibecheck@somacheck` (or your Team/Enterprise admin has added it to
-  `allowedChannelPlugins`); without that acceptance, Claude Code does **not**
-  promise automatic next-turn delivery of the answer, so you will use the
-  recovery handle described below.
-- **Claude.ai and Claude Desktop (hosted OAuth).** Connect through the
-  separately deployed hosted MCP server at
+  `allowedChannelPlugins`); without that acceptance, plain Claude Code does
+  **not** promise automatic next-turn delivery of the answer, so you will use
+  the recovery handle described below.
+- **Claude.ai and Claude Desktop (hosted OAuth).** The hosted OAuth route is
+  served by the separately deployed MCP server at
   `https://mcp.somacheck.com/functions/v1/mcp`; the local Channel plugin does
-  not change or claim that deployment. See [somacheck.com/docs/hosted-mcp](https://somacheck.com/docs/hosted-mcp).
-- **Cursor and Windsurf / Devin Desktop.** Use the developer-preview packages
-  in this repository's [`cursor/`](cursor/README.md) and
-  [`windsurf/`](windsurf/README.md) directories; both host their own
-  marketplace review and acceptance, which remain pending.
+  not change or claim that deployment. You connect Claude.ai or Claude
+  Desktop to that hosted endpoint following
+  [somacheck.com/docs/hosted-mcp](https://somacheck.com/docs/hosted-mcp) —
+  this README does not assert that Anthropic's hosted OAuth path has
+  accepted the plugin on your behalf. Real acceptance has to be observed in
+  the host, not inferred from this repository.
+- **Cursor and Windsurf.** Use the developer-preview packages in this
+  repository's [`cursor/`](cursor/README.md) and
+  [`windsurf/`](windsurf/README.md) directories. Their developer-preview
+  setup guides are real; actual host OAuth and phone acceptance on each
+  marketplace have not been independently verified here, so do not treat
+  either route as already accepted.
 
-After the host is ready, ask Claude for **one consented immediate vibecheck**.
-The existing explicit ask *is* the consent — do not bolt on redundant
-"are you sure?" prompts. Claude picks the tool:
+After the host is ready, ask the agent for **one consented immediate
+vibecheck**. The existing explicit ask *is* the consent — do not bolt on
+redundant "are you sure?" prompts. The agent picks the tool:
 
 - **Immediate phone ask:** `request_vibecheck`. This is the only tool that
   sends a statement to your phone right now and waits up to 45 seconds for
@@ -58,31 +65,46 @@ The existing explicit ask *is* the consent — do not bolt on redundant
   ask your phone and does **not** verify delivery — do not choose it when
   the person asked for an immediate vibecheck.
 
-Wait for the answer and look at three things together: (a) the first-person
-statement Claude sent, (b) the binary reading (**Aligned** or **Unaligned**),
-and (c) the returned confidence. They have to line up — a high-confidence
-*Unaligned* on "I want to send this email as written" is a signal to pause,
-not permission to send. The reading is context, never truth, diagnosis,
-authorization, approval, or a decision; you remain the authority.
+The result returns three separate things: (a) the first-person statement
+your agent sent, (b) the binary reading (**Aligned** or **Unaligned**), and
+(c) the returned confidence. They are what the server recorded for that
+`request_id`; they are not independent proof that the phone displayed the
+proposition to you, and they are not a measurement from inside your phone.
+**Only your own observation of what your phone actually showed you
+confirms the phone display.** The reading is context, never truth,
+diagnosis, authorization, approval, or a decision; you remain the
+authority. A binary reading of **Unaligned** does not by itself prescribe
+a pause or a meaning — you interpret it in your own context, and you
+choose what to do next.
 
 If the request is still pending, **keep the same `request_id` handle** and
 poll `get_vibecheck_result` about every 15 seconds until the status is
-answered or expired. Do not start a second `request_vibecheck` for the same
-proposition — the duplicate will overwrite the first pending handle and
-waste a phone ask. A non-empty `get_vibecheck_status` database row is not
-proof the phone displayed the proposition; it only confirms the server has
-the request. Only the matched proposition, binary reading, and confidence
-together confirm what the phone saw.
+answered, expired, or cancelled. Do not create a second
+`request_vibecheck` for the same proposition just to poll status — open
+the same SomaCheck app on the same account the original ask went to (or
+wait with the existing handle) instead. Wasting a phone ask on a duplicate
+is its own problem; preserving the original handle is the recovery path.
 
 Example (non-sensitive, no efficacy claim):
 
-> Claude, give me a vibecheck on "I want to commit to this direction for the
+> Agent, give me a vibecheck on "I want to commit to this direction for the
 > rest of the week."
 
-When `request_vibecheck` returns `Unaligned` with 0.71, Claude can offer to
-help you reframe the proposition — *you* decide whether the original still
-holds. The phone may also be unreachable; that requires a retry, not a
-third interpretation.
+This is a *hypothetical* prompt — the only real outcome is the actual
+returned result your phone and this server produce together. For example,
+**if the actual returned result is `Unaligned` with 0.71**, that number is
+the model-interpreted reading relative to the proposition, not its cause;
+the agent may offer to help you reframe the proposition, and *you* decide
+whether the original still holds. **If the actual returned result is
+`Cancelled`, the request has been terminated and the handle is no longer
+polled.** **If the phone is unreachable** (no display, no prompt, no
+network), that is a phone-side delivery problem: check the same handle,
+confirm you are signed into the same SomaCheck account on the phone, and
+retry — it is **not** an unreadable capture and does **not** call for a
+third interpretation. **If the capture itself was unreadable** (motion
+artifact, dropped gesture, bad baseline), that requires a fresh
+`request_vibecheck` after the phone recovers; the unreadable capture is
+retried, never reinterpreted.
 
 ## What this repository is
 
