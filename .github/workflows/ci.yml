@@ -241,6 +241,9 @@ jobs:
       - name: Guard the public README tools index against drift
         run: node .github/scripts/verify-readme-tools-index.mjs
 
+      - name: Test exact runtime tool-count guard
+        run: node --test .github/scripts/verify-mcp-runtime.test.mjs
+
       - name: Install and probe the locked local MCP runtime
         run: |
           set -euo pipefail

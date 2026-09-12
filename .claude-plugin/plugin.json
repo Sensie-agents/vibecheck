@@ -1,7 +1,7 @@
 {
   "name": "vibecheck",
   "description": "Body language for AI agents, on your terms. SomaCheck gives Claude a consented Aligned or Unaligned signal with confidence, while you remain the authority.",
-  "version": "0.6.14",
+  "version": "0.6.15",
   "author": {
     "name": "Sensie",
     "email": "agents@joinsensie.com"
