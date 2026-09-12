@@ -49,8 +49,8 @@ matches the route you choose.
 - **Cursor and Windsurf.** Use the developer-preview packages in this
   repository's [`cursor/`](cursor/README.md) and
   [`windsurf/`](windsurf/README.md) directories. Their developer-preview
-  setup guides are real; actual host OAuth and phone acceptance on each
-  marketplace have not been independently verified here, so do not treat
+  setup guides are real; actual host OAuth and phone acceptance in each
+  client have not been independently verified here, so do not treat
   either route as already accepted.
 
 After the host is ready, ask the agent for **one consented immediate
@@ -68,8 +68,8 @@ redundant "are you sure?" prompts. The agent picks the tool:
 The result returns three separate things: (a) the first-person statement
 your agent sent, (b) the binary reading (**Aligned** or **Unaligned**), and
 (c) the returned confidence. They are what the server recorded for that
-`request_id`; they are not independent proof that the phone displayed the
-proposition to you, and they are not a measurement from inside your phone.
+`request_id`. The reading is derived from your phone gesture, but the returned
+record alone is not independent proof of what your phone displayed.
 **Only your own observation of what your phone actually showed you
 confirms the phone display.** The reading is context, never truth,
 diagnosis, authorization, approval, or a decision; you remain the
@@ -92,8 +92,8 @@ Example (non-sensitive, no efficacy claim):
 
 This is a *hypothetical* prompt — the only real outcome is the actual
 returned result your phone and this server produce together. For example,
-**if the actual returned result is `Unaligned` with 0.71**, that number is
-the model-interpreted reading relative to the proposition, not its cause;
+**if the actual returned result is `Unaligned` with confidence 0.71**, the
+reading is a model interpretation relative to the proposition, not its cause;
 the agent may offer to help you reframe the proposition, and *you* decide
 whether the original still holds. **If the actual returned result is
 `Cancelled`, the request has been terminated and the handle is no longer

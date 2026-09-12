@@ -146,6 +146,9 @@ const QUOTA_LITERAL = /quota\s*=\s*exactly\s*\d+/i;
 const QUOTA_NATURAL = /(?:request_vibecheck[\s\S]{0,400}exactly\s*\d+[\s\S]{0,80}(?:proposition|statement|ask|required|limit|check[\s-]?in))|(?:exactly\s*\d+[\s\S]{0,80}(?:proposition|statement|ask|required|limit|check[\s-]?in)[\s\S]{0,200}request_vibecheck)/i;
 
 function validateFirstUse(text, label = "live") {
+  for (const match of text.matchAll(/@somacheck\/vibecheck@(\d+\.\d+\.\d+)/g)) {
+    assert.equal(match[1], runtimeVersion, `[${label}] stale runtime command`);
+  }
   // Run prohibited-phrase checks first so a regression that adds a
   // prohibited claim trips the validator for the prohibited reason,
   // not for an incidental required-pattern gap left by the same edit.
@@ -220,7 +223,6 @@ function expectFirstUseFailure(mutatedReadme, baselineText, label, expectedError
 
 const runtimePinPattern = new RegExp(
   `@somacheck/vibecheck@${runtimeVersion.replaceAll(".", "\\.")}`,
-  "g",
 );
 
 // Stale runtime pin: change only the FIRST reviewed-runtime pin so a
@@ -229,11 +231,12 @@ const runtimePinPattern = new RegExp(
 // regressions where one command was updated and another was not.
 const staleRuntimeSingle = readme.replace(
   runtimePinPattern,
-  "@somacheck/vibecheck@0.6.7",
-  1,
+  "@somacheck/vibecheck@0.6.12",
 );
+assert.ok(staleRuntimeSingle.includes(`@somacheck/vibecheck@${runtimeVersion}`),
+  "single-pin regression must leave other current commands intact");
 expectFirstUseFailure(staleRuntimeSingle, readme, "stale-runtime-pin-single",
-  /README local install must pin the reviewed runtime|stale 0\.6\.7/);
+  /stale runtime command/);
 
 // quota=exactly3 must fail: the feed-stock cap must never be presented as
 // a phone-ask or per-check-in limit on `request_vibecheck`. We splice the
