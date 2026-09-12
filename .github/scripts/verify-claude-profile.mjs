@@ -83,8 +83,14 @@ assert.match(skill, /Confidence is model uncertainty, not capture quality, motio
   "skill must distinguish confidence from capture quality and signal strength");
 assert.match(skill, /Never claim the body or gesture knows better or sooner than words or\s+reasoning/i,
   "skill must not claim unsupported body-over-reasoning efficacy");
-assert.match(skill, /Do not reframe assessment, ranking, eligibility, payment, or employment/i,
-  "skill must prohibit disguised third-party assessment");
+assert.match(skill, /assessing or selecting another person for employment,\s+eligibility, payment, or ranking, do not offer any related vibecheck/i,
+  "skill must prohibit every related vibecheck during third-party assessment");
+assert.match(skill, /confidence, readiness, evidence, judgment, or interview\s+performance/i,
+  "skill must prohibit first-person proxies for third-party assessment");
+assert.match(skill, /Use ordinary discussion only for that decision/i,
+  "skill must route third-party assessment to ordinary discussion only");
+assert.match(skill, /personal career choices remain eligible for self-reflection/i,
+  "skill must keep the user's own career choices separate and allowed");
 
 const readme = readText("README.md");
 assert.match(readme, new RegExp(`@somacheck/vibecheck@${runtimeVersion.replaceAll(".", "\\.")}`),

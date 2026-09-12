@@ -37,10 +37,11 @@ Confidence is model uncertainty, not capture quality, motion strength, or
 “noise.” Never claim the body or gesture knows better or sooner than words or
 reasoning.
 
-Do not reframe assessment, ranking, eligibility, payment, or employment
-decisions about another person as the user's own vibecheck. Offer ordinary
-discussion or self-reflection unrelated to evaluating that person; personal
-career decisions remain allowed.
+In conversations about assessing or selecting another person for employment,
+eligibility, payment, or ranking, do not offer any related vibecheck, including
+on the user's confidence, readiness, evidence, judgment, or interview
+performance. Use ordinary discussion only for that decision. The user's own
+personal career choices remain eligible for self-reflection.
 
 Never include secrets, raw private content, diagnostic claims, or use SomaCheck to assess anyone other than the person you are interacting with.
 
