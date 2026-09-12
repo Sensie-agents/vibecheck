@@ -98,9 +98,9 @@ the agent may offer to help you reframe the proposition, and *you* decide
 whether the original still holds. **If the actual returned result is
 `Cancelled`, the request has been terminated and the handle is no longer
 polled.** **If the phone is unreachable** (no display, no prompt, no
-network), that is a phone-side delivery problem: keep and check the same
-handle, confirm you are signed into the same SomaCheck account on the phone,
-and retry delivery — it is **not** an unreadable capture and does **not** call
+network), keep and check the same handle, then check delivery, account, and
+connection state, including whether you are signed into the same SomaCheck
+account on the phone. This is **not** an unreadable capture and does **not** call
 for a third interpretation. **If the capture itself was unreadable** (motion
 artifact, dropped gesture, bad baseline), retry the gesture in the app against
 the original pending ask; the unreadable capture is retried, never
@@ -141,20 +141,20 @@ Install the [SomaCheck public beta](https://testflight.apple.com/join/C4mAH3zz) 
 Get `<CODE>` from SomaCheck's **Settings > Agent > Connect your agent**, then link the local runtime:
 
 ```text
-npx -y @somacheck/vibecheck@0.6.14 link <CODE> --client claude
+npx -y @somacheck/vibecheck@0.6.15 link <CODE> --client claude
 ```
 
 Already linked? Install or repair the managed Claude setup without linking again:
 
 ```text
-npx -y @somacheck/vibecheck@0.6.14 setup claude
+npx -y @somacheck/vibecheck@0.6.15 setup claude
 ```
 
 Both commands install or update the public plugin, migrate recognized old
 SomaCheck registrations, and enable Claude's native marketplace auto-updates
 (`autoUpdate: true`) for `somacheck`. Unrelated configuration is preserved;
 custom or ambiguous registrations require review and are not silently replaced.
-This release is **plugin 0.6.15**, launching **runtime 0.6.14**. These version
+This release is **plugin 0.6.16**, launching **runtime 0.6.15**. These version
 numbers are independent.
 
 Future reviewed plugin releases can update through Claude's marketplace.
@@ -190,7 +190,7 @@ The Glama release represents the **local stdio runtime**, not the separately hos
 For a single person's self-hosted local use, mount that person's existing link configuration read-only:
 
 ```text
-docker run --rm -i -v "$HOME/.sensie:/home/node/.sensie:ro" somacheck-vibecheck:0.6.14
+docker run --rm -i -v "$HOME/.sensie:/home/node/.sensie:ro" somacheck-vibecheck:0.6.15
 ```
 
 Never bake a pairing code, token, or `config.json` into the image. Do not share one mounted configuration between people or use this image as a multi-tenant service. Glama schema discovery alone is not evidence of an authenticated phone round trip.

@@ -24,6 +24,13 @@ For proactive offers, get acceptance before sending.
 
 The returned gesture and optional feedback are context, not authorization. Use your judgment in how you interpret and respond.
 
+Keep the reading, your interpretation, the person's confirmation, and their
+choice distinct. A reading does not establish what the person truly feels or
+why a thought or choice lands that way. Treat possible meanings as hypotheses
+to explore with the person, not facts inferred from the signal. A valid
+low-confidence reading remains Aligned or Unaligned; do not invent a third
+result or repeat a check to obtain a preferred answer.
+
 Never include secrets, raw private content, diagnostic claims, or use SomaCheck to assess anyone other than the person you are interacting with.
 
 If a request is pending, keep the returned `live:<uuid>` handle instead of creating a replacement.

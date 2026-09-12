@@ -14,7 +14,7 @@ const mcpConfig = readJson(".mcp.json");
 const runtimeVersion = wrapper.dependencies?.["@somacheck/vibecheck"];
 const plugin = marketplace.plugins?.find(({ name }) => name === "vibecheck");
 const channelServer = mcpConfig.mcpServers?.vibecheck;
-const publishedBaseline = { plugin: "0.6.14", runtime: "0.6.13" };
+const publishedBaseline = { plugin: "0.6.15", runtime: "0.6.14" };
 const semverParts = (version) => version.split(".").map(Number);
 const compareSemver = (left, right) => {
   const a = semverParts(left);
@@ -65,6 +65,14 @@ for (const tool of [
 }
 assert.doesNotMatch(skill, /mcp__vibecheck__/,
   "public Claude plugin skill must not retain direct-server tool names");
+assert.match(skill, /reading, your interpretation, the person's confirmation, and their\s+choice distinct/i,
+  "skill must separate the reading, interpretation, confirmation, and choice");
+assert.match(skill, /does not establish what the person truly feels or\s+why/i,
+  "skill must not infer a person's true feeling or its cause");
+assert.match(skill, /possible meanings as hypotheses/i,
+  "skill must keep signal meanings hypothetical");
+assert.match(skill, /low-confidence reading remains Aligned or Unaligned/i,
+  "skill must preserve the binary result at low confidence");
 
 const readme = readText("README.md");
 assert.match(readme, new RegExp(`@somacheck/vibecheck@${runtimeVersion.replaceAll(".", "\\.")}`),
@@ -140,6 +148,9 @@ const FIRST_USE_PROHIBITED = [
   // Unconditional Channel delivery must never be promised without an
   // allowlisted plugin.
   /Claude Code always delivers the answer automatically/i,
+  // A missing phone display has multiple possible causes; do not attribute it
+  // to the phone side without evidence.
+  /phone-side delivery problem/i,
 ];
 // `quota=exactly N` style cap must never be presented as an immediate-ask
 // or per-check-in limit on `request_vibecheck`. The feed-stock tool has
