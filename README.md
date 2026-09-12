@@ -24,6 +24,89 @@ diagnosis, authorization, approval, or a decision.
 | `post_vibecheck_statement` | Stock the optional SomaCheck feed with up to three personalized reflections for the person to consider later. Optional feed stock only; this is not an immediate phone ask and does not verify delivery. |
 | `share_somacheck_context` | Share 1-20 concise, user-authorized context observations so SomaCheck can prepare richer propositions. Send derived summaries only; never raw conversation text, photos, credentials, identifiers, or diagnostic claims. |
 
+## First successful vibecheck
+
+Pick the host you actually use. Each route is separate; the next section only
+matches the route you choose.
+
+- **Claude Code (local Channel plugin).** Install the plugin and link SomaCheck
+  in [Install the Claude Code Channel plugin](#install-the-claude-code-channel-plugin)
+  below, then launch Claude Code with the approved Channel command. Channels
+  remain the preferred path whenever Anthropic has allowlisted
+  `vibecheck@somacheck` (or your Team/Enterprise admin has added it to
+  `allowedChannelPlugins`); without that acceptance, plain Claude Code does
+  **not** promise automatic next-turn delivery of the answer, so you will use
+  the recovery handle described below.
+- **Claude.ai and Claude Desktop (hosted OAuth).** The hosted OAuth route is
+  served by the separately deployed MCP server at
+  `https://mcp.somacheck.com/functions/v1/mcp`; the local Channel plugin does
+  not change or claim that deployment. You connect Claude.ai or Claude
+  Desktop to that hosted endpoint following
+  [somacheck.com/docs/hosted-mcp](https://somacheck.com/docs/hosted-mcp) —
+  this README does not assert that Anthropic's hosted OAuth path has
+  accepted the plugin on your behalf. Real acceptance has to be observed in
+  the host, not inferred from this repository.
+- **Cursor and Windsurf.** Use the developer-preview packages in this
+  repository's [`cursor/`](cursor/README.md) and
+  [`windsurf/`](windsurf/README.md) directories. Their developer-preview
+  setup guides are real; actual host OAuth and phone acceptance in each
+  client have not been independently verified here, so do not treat
+  either route as already accepted.
+
+After the host is ready, ask the agent for **one consented immediate
+vibecheck**. The existing explicit ask *is* the consent — do not bolt on
+redundant "are you sure?" prompts. The agent picks the tool:
+
+- **Immediate phone ask:** `request_vibecheck`. This is the only tool that
+  sends a statement to your phone right now and waits up to 45 seconds for
+  the answer. Use it when the user wants a check-in now.
+- **Optional feed stock (not an immediate ask):** `post_vibecheck_statement`
+  only stocks the reflection feed for later consideration. It does **not**
+  ask your phone and does **not** verify delivery — do not choose it when
+  the person asked for an immediate vibecheck.
+
+The result returns three separate things: (a) the first-person statement
+your agent sent, (b) the binary reading (**Aligned** or **Unaligned**), and
+(c) the returned confidence. They are what the server recorded for that
+`request_id`. The reading is derived from your phone gesture, but the returned
+record alone is not independent proof of what your phone displayed.
+**Only your own observation of what your phone actually showed you
+confirms the phone display.** The reading is context, never truth,
+diagnosis, authorization, approval, or a decision; you remain the
+authority. A binary reading of **Unaligned** does not by itself prescribe
+a pause or a meaning — you interpret it in your own context, and you
+choose what to do next.
+
+If the request is still pending, **keep the same `request_id` handle** and
+poll `get_vibecheck_result` about every 15 seconds until the status is
+answered, expired, or cancelled. Do not create a second
+`request_vibecheck` for the same proposition just to poll status — open
+the same SomaCheck app on the same account the original ask went to (or
+wait with the existing handle) instead. Wasting a phone ask on a duplicate
+is its own problem; preserving the original handle is the recovery path.
+
+Example (non-sensitive, no efficacy claim):
+
+> Agent, give me a vibecheck on "I want to commit to this direction for the
+> rest of the week."
+
+This is a *hypothetical* prompt — the only real outcome is the actual
+returned result your phone and this server produce together. For example,
+**if the actual returned result is `Unaligned` with confidence 0.71**, the
+reading is a model interpretation relative to the proposition, not its cause;
+the agent may offer to help you reframe the proposition, and *you* decide
+whether the original still holds. **If the actual returned result is
+`Cancelled`, the request has been terminated and the handle is no longer
+polled.** **If the phone is unreachable** (no display, no prompt, no
+network), that is a phone-side delivery problem: keep and check the same
+handle, confirm you are signed into the same SomaCheck account on the phone,
+and retry delivery — it is **not** an unreadable capture and does **not** call
+for a third interpretation. **If the capture itself was unreadable** (motion
+artifact, dropped gesture, bad baseline), retry the gesture in the app against
+the original pending ask; the unreadable capture is retried, never
+reinterpreted. Create a fresh `request_vibecheck` only after the original ask
+is terminal and the person explicitly wants a new ask.
+
 ## What this repository is
 
 This public repository contains the **Claude marketplace manifest** (`.claude-plugin/marketplace.json`), the **Claude plugin manifest** (`.claude-plugin/plugin.json`), the **agent skill** (`SKILL.md`), and a **bundled local Channel server** (`.mcp.json`). The Channel lets an authorized phone result enter the same open Claude Code conversation so Claude can continue without another typed message.
