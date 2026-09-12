@@ -244,6 +244,9 @@ jobs:
       - name: Test exact runtime tool-count guard
         run: node --test .github/scripts/verify-mcp-runtime.test.mjs
 
+      - name: Test Official Registry publication guard
+        run: node --test .github/scripts/verify-registry-publication.test.mjs
+
       - name: Install and probe the locked local MCP runtime
         run: |
           set -euo pipefail
