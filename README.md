@@ -24,6 +24,66 @@ diagnosis, authorization, approval, or a decision.
 | `post_vibecheck_statement` | Stock the optional SomaCheck feed with up to three personalized reflections for the person to consider later. Optional feed stock only; this is not an immediate phone ask and does not verify delivery. |
 | `share_somacheck_context` | Share 1-20 concise, user-authorized context observations so SomaCheck can prepare richer propositions. Send derived summaries only; never raw conversation text, photos, credentials, identifiers, or diagnostic claims. |
 
+## First successful vibecheck
+
+Pick the host you actually use. Each route is separate; the next section only
+matches the route you choose.
+
+- **Claude Code (local Channel plugin).** Install the plugin and link SomaCheck
+  in [Install the Claude Code Channel plugin](#install-the-claude-code-channel-plugin)
+  below, then launch Claude Code with the approved Channel command. Channels
+  remain the preferred path whenever Anthropic has allowlisted
+  `vibecheck@somacheck` (or your Team/Enterprise admin has added it to
+  `allowedChannelPlugins`); without that acceptance, Claude Code does **not**
+  promise automatic next-turn delivery of the answer, so you will use the
+  recovery handle described below.
+- **Claude.ai and Claude Desktop (hosted OAuth).** Connect through the
+  separately deployed hosted MCP server at
+  `https://mcp.somacheck.com/functions/v1/mcp`; the local Channel plugin does
+  not change or claim that deployment. See [somacheck.com/docs/hosted-mcp](https://somacheck.com/docs/hosted-mcp).
+- **Cursor and Windsurf / Devin Desktop.** Use the developer-preview packages
+  in this repository's [`cursor/`](cursor/README.md) and
+  [`windsurf/`](windsurf/README.md) directories; both host their own
+  marketplace review and acceptance, which remain pending.
+
+After the host is ready, ask Claude for **one consented immediate vibecheck**.
+The existing explicit ask *is* the consent — do not bolt on redundant
+"are you sure?" prompts. Claude picks the tool:
+
+- **Immediate phone ask:** `request_vibecheck`. This is the only tool that
+  sends a statement to your phone right now and waits up to 45 seconds for
+  the answer. Use it when the user wants a check-in now.
+- **Optional feed stock (not an immediate ask):** `post_vibecheck_statement`
+  only stocks the reflection feed for later consideration. It does **not**
+  ask your phone and does **not** verify delivery — do not choose it when
+  the person asked for an immediate vibecheck.
+
+Wait for the answer and look at three things together: (a) the first-person
+statement Claude sent, (b) the binary reading (**Aligned** or **Unaligned**),
+and (c) the returned confidence. They have to line up — a high-confidence
+*Unaligned* on "I want to send this email as written" is a signal to pause,
+not permission to send. The reading is context, never truth, diagnosis,
+authorization, approval, or a decision; you remain the authority.
+
+If the request is still pending, **keep the same `request_id` handle** and
+poll `get_vibecheck_result` about every 15 seconds until the status is
+answered or expired. Do not start a second `request_vibecheck` for the same
+proposition — the duplicate will overwrite the first pending handle and
+waste a phone ask. A non-empty `get_vibecheck_status` database row is not
+proof the phone displayed the proposition; it only confirms the server has
+the request. Only the matched proposition, binary reading, and confidence
+together confirm what the phone saw.
+
+Example (non-sensitive, no efficacy claim):
+
+> Claude, give me a vibecheck on "I want to commit to this direction for the
+> rest of the week."
+
+When `request_vibecheck` returns `Unaligned` with 0.71, Claude can offer to
+help you reframe the proposition — *you* decide whether the original still
+holds. The phone may also be unreachable; that requires a retry, not a
+third interpretation.
+
 ## What this repository is
 
 This public repository contains the **Claude marketplace manifest** (`.claude-plugin/marketplace.json`), the **Claude plugin manifest** (`.claude-plugin/plugin.json`), the **agent skill** (`SKILL.md`), and a **bundled local Channel server** (`.mcp.json`). The Channel lets an authorized phone result enter the same open Claude Code conversation so Claude can continue without another typed message.
