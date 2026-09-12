@@ -98,13 +98,14 @@ the agent may offer to help you reframe the proposition, and *you* decide
 whether the original still holds. **If the actual returned result is
 `Cancelled`, the request has been terminated and the handle is no longer
 polled.** **If the phone is unreachable** (no display, no prompt, no
-network), that is a phone-side delivery problem: check the same handle,
-confirm you are signed into the same SomaCheck account on the phone, and
-retry — it is **not** an unreadable capture and does **not** call for a
-third interpretation. **If the capture itself was unreadable** (motion
-artifact, dropped gesture, bad baseline), that requires a fresh
-`request_vibecheck` after the phone recovers; the unreadable capture is
-retried, never reinterpreted.
+network), that is a phone-side delivery problem: keep and check the same
+handle, confirm you are signed into the same SomaCheck account on the phone,
+and retry delivery — it is **not** an unreadable capture and does **not** call
+for a third interpretation. **If the capture itself was unreadable** (motion
+artifact, dropped gesture, bad baseline), retry the gesture in the app against
+the original pending ask; the unreadable capture is retried, never
+reinterpreted. Create a fresh `request_vibecheck` only after the original ask
+is terminal and the person explicitly wants a new ask.
 
 ## What this repository is
 

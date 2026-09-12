@@ -134,6 +134,9 @@ const FIRST_USE_PROHIBITED = [
   /matched proposition,?\s*binary reading,?\s*and confidence (together )?confirm what the phone saw/i,
   // No fixed interpretation prescribed for Unaligned.
   /is a signal to pause/i,
+  // An unreadable capture preserves the original pending ask. Creating a
+  // fresh request at this point can duplicate or conflict with that ask.
+  /unreadable[\s\S]{0,180}requires? (?:a )?fresh `request_vibecheck`/i,
   // Unconditional Channel delivery must never be promised without an
   // allowlisted plugin.
   /Claude Code always delivers the answer automatically/i,
@@ -324,5 +327,15 @@ const droppedCancelled = readme.replace(
 );
 expectFirstUseFailure(droppedCancelled, readme, "dropped-cancelled-status",
   /recovery flow must include the cancelled terminal status/);
+
+// Unreadable capture must retain the original pending ask. Reintroducing the
+// old instruction to create a fresh MCP request must fail even when every
+// other first-use requirement remains intact.
+const freshRequestAfterUnreadable = readme.replace(
+  /retry the gesture in the app against\s*\n?the original pending ask; the unreadable capture is retried, never\s*\n?reinterpreted\. Create a fresh `request_vibecheck` only after the original ask\s*\n?is terminal and the person explicitly wants a new ask\./,
+  "that requires a fresh `request_vibecheck` after the phone recovers; the unreadable capture is retried, never reinterpreted.",
+);
+expectFirstUseFailure(freshRequestAfterUnreadable, readme, "fresh-request-after-unreadable",
+  /first-use section must not match prohibited.*unreadable/);
 
 process.stdout.write(`CLAUDE PROFILE CONSISTENCY: PASS (${runtimeVersion})\n`);
