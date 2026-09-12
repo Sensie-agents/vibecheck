@@ -73,6 +73,18 @@ assert.match(skill, /possible meanings as hypotheses/i,
   "skill must keep signal meanings hypothetical");
 assert.match(skill, /low-confidence reading remains Aligned or Unaligned/i,
   "skill must preserve the binary result at low confidence");
+assert.match(skill, /statement starting “I” or “My”/i,
+  "skill must make first-person proposition wording concrete");
+assert.match(skill, /Preserve supplied\s+first-person wording verbatim/i,
+  "skill must preserve user-supplied first-person wording");
+assert.match(skill, /Agreement or\s+choice is the person's separate confirmation/i,
+  "skill must not infer agreement or choice from a reading");
+assert.match(skill, /Confidence is model uncertainty, not capture quality, motion strength/i,
+  "skill must distinguish confidence from capture quality and signal strength");
+assert.match(skill, /Never claim the body or gesture knows better or sooner than words or\s+reasoning/i,
+  "skill must not claim unsupported body-over-reasoning efficacy");
+assert.match(skill, /Do not reframe assessment, ranking, eligibility, payment, or employment/i,
+  "skill must prohibit disguised third-party assessment");
 
 const readme = readText("README.md");
 assert.match(readme, new RegExp(`@somacheck/vibecheck@${runtimeVersion.replaceAll(".", "\\.")}`),
