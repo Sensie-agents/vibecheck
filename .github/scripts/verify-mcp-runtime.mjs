@@ -90,8 +90,10 @@ function handle(message) {
       "request_vibecheck",
     ];
     const missing = required.filter((name) => !names.has(name));
-    if (missing.length > 0) {
-      fail(`tools/list is missing: ${missing.join(", ")}`);
+    const unexpected = [...names].filter((name) => !required.includes(name));
+    if (missing.length > 0 || unexpected.length > 0 || names.size !== required.length
+      || message.result?.tools?.length !== required.length) {
+      fail(`tools/list must expose exactly six reviewed tools (missing: ${missing.join(", ") || "none"}; unexpected: ${unexpected.join(", ") || "none"})`);
       return;
     }
     send({

@@ -14,11 +14,26 @@ const mcpConfig = readJson(".mcp.json");
 const runtimeVersion = wrapper.dependencies?.["@somacheck/vibecheck"];
 const plugin = marketplace.plugins?.find(({ name }) => name === "vibecheck");
 const channelServer = mcpConfig.mcpServers?.vibecheck;
+const publishedBaseline = { plugin: "0.6.14", runtime: "0.6.13" };
+const semverParts = (version) => version.split(".").map(Number);
+const compareSemver = (left, right) => {
+  const a = semverParts(left);
+  const b = semverParts(right);
+  for (let index = 0; index < 3; index += 1) {
+    if (a[index] !== b[index]) return a[index] - b[index];
+  }
+  return 0;
+};
 
 assert.match(runtimeVersion ?? "", /^\d+\.\d+\.\d+$/, "runtime must pin an exact SemVer");
 assert.equal(wrapper.private, true, "the Glama wrapper must remain private");
 assert.equal(plugin?.source, ".", "the public Claude plugin must source from this repository");
 assert.equal(plugin?.version, manifest.version, "marketplace and plugin manifest versions must agree");
+assert.match(plugin?.version ?? "", /^\d+\.\d+\.\d+$/, "plugin must use SemVer");
+if (runtimeVersion !== publishedBaseline.runtime) {
+  assert.ok(compareSemver(plugin.version, publishedBaseline.plugin) > 0,
+    "a changed runtime pin requires a plugin version newer than the published plugin");
+}
 assert.equal(lockfile.packages?.[""]?.dependencies?.["@somacheck/vibecheck"], runtimeVersion,
   "package-lock root dependency must match the wrapper");
 assert.equal(lockfile.packages?.[`node_modules/@somacheck/vibecheck`]?.version, runtimeVersion,
@@ -54,6 +69,8 @@ assert.doesNotMatch(skill, /mcp__vibecheck__/,
 const readme = readText("README.md");
 assert.match(readme, new RegExp(`@somacheck/vibecheck@${runtimeVersion.replaceAll(".", "\\.")}`),
   "README local install must pin the reviewed runtime");
+assert.match(readme, new RegExp(`plugin ${plugin.version.replaceAll(".", "\\.")}`),
+  "README must identify the independently versioned plugin release");
 assert.match(readme, /claude plugin install vibecheck@somacheck/, "README must retain the plugin install");
 assert.match(readme, /## Link SomaCheck and start the Channel/, "README must identify the primary Claude Code Channel path");
 assert.match(readme, /claude --channels plugin:vibecheck@somacheck/,
