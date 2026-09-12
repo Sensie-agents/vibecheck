@@ -1,0 +1,24 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.Sensie-agents/vibecheck",
+  "title": "SomaCheck Vibecheck",
+  "description": "Body language for AI agents, on your terms. A consented SomaCheck signal, with you as the authority.",
+  "version": "0.6.15",
+  "websiteUrl": "https://somacheck.com/docs/hosted-mcp",
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://mcp.somacheck.com/functions/v1/mcp"
+    }
+  ],
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "@somacheck/vibecheck",
+      "version": "0.6.15",
+      "transport": {
+        "type": "stdio"
+      }
+    }
+  ]
+}

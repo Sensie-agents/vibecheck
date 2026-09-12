@@ -1,0 +1,118 @@
+name: Publish Official MCP Registry
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Exact reviewed server.json and runtime version
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: official-registry-publication
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    if: github.repository == 'Sensie-agents/vibecheck' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      PUBLISHER_VERSION: 1.8.1
+      PUBLISHER_ARCHIVE_SHA256: a06c9096dcb9727c13555b6be26c7effa707b01f06a4c561ba7a3635443cf2cc
+      REGISTRY_LATEST_URL: https://registry.modelcontextprotocol.io/v0.1/servers/io.github.Sensie-agents%2Fvibecheck/versions/latest
+
+    steps:
+      - name: Check out the reviewed main commit
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+
+      - name: Fetch exact public npm metadata
+        env:
+          RELEASE_VERSION: ${{ inputs.version }}
+        run: |
+          set -euo pipefail
+          case "${RELEASE_VERSION}" in
+            ''|*[!0-9.]*|.*|*.) exit 1 ;;
+          esac
+          test "$(printf '%s' "${RELEASE_VERSION}" | awk -F. 'NF == 3 && $1 ~ /^[0-9]+$/ && $2 ~ /^[0-9]+$/ && $3 ~ /^[0-9]+$/ { print "valid" }')" = valid
+          test ! -e .ci
+          mkdir -p .ci/bin
+          curl --fail --show-error --silent --location --max-time 20 --max-filesize 1048576 \
+            --proto '=https' --proto-redir '=https' \
+            --output .ci/npm.json \
+            "https://registry.npmjs.org/@somacheck%2Fvibecheck/${RELEASE_VERSION}"
+          test -s .ci/npm.json
+
+      - name: Fail closed on repository, ref, version, namespace, and npm SRI
+        env:
+          RELEASE_VERSION: ${{ inputs.version }}
+        run: |
+          set -euo pipefail
+          node .github/scripts/verify-registry-publication.mjs preflight \
+            --manifest server.json \
+            --wrapper package.json \
+            --lock package-lock.json \
+            --npm-metadata .ci/npm.json \
+            --version "${RELEASE_VERSION}" \
+            --repository "${GITHUB_REPOSITORY}" \
+            --ref "${GITHUB_REF}" \
+            --event "${GITHUB_EVENT_NAME}"
+
+      - name: Install checksum-pinned official publisher
+        run: |
+          set -euo pipefail
+          archive="mcp-publisher_linux_amd64.tar.gz"
+          curl --fail --show-error --silent --location --max-time 30 --max-filesize 16777216 \
+            --proto '=https' --proto-redir '=https' \
+            --output ".ci/${archive}" \
+            "https://github.com/modelcontextprotocol/registry/releases/download/v${PUBLISHER_VERSION}/${archive}"
+          printf '%s  %s\n' "${PUBLISHER_ARCHIVE_SHA256}" ".ci/${archive}" | sha256sum --check --strict
+          tar -xzf ".ci/${archive}" -C .ci/bin mcp-publisher
+          .ci/bin/mcp-publisher --version | grep -Eq "mcp-publisher ${PUBLISHER_VERSION}( |$)"
+
+      - name: Validate reviewed Registry manifest
+        run: .ci/bin/mcp-publisher validate server.json
+
+      - name: Authenticate with ephemeral GitHub Actions OIDC
+        run: .ci/bin/mcp-publisher login github-oidc
+
+      - name: Publish exact reviewed Registry manifest
+        run: .ci/bin/mcp-publisher publish server.json
+
+      - name: Require active exact latest public readback
+        env:
+          RELEASE_VERSION: ${{ inputs.version }}
+        run: |
+          set -euo pipefail
+          for attempt in 1 2 3 4 5; do
+            curl --fail --show-error --silent --location --max-time 20 --max-filesize 1048576 \
+              --proto '=https' --proto-redir '=https' \
+              --output .ci/registry.json "${REGISTRY_LATEST_URL}"
+            if node .github/scripts/verify-registry-publication.mjs readback \
+              --registry-response .ci/registry.json \
+              --manifest server.json \
+              --version "${RELEASE_VERSION}" \
+              --sha "${GITHUB_SHA}" \
+              --publisher-version "${PUBLISHER_VERSION}" \
+              --receipt .ci/registry-publication-receipt.json; then
+              exit 0
+            fi
+            sleep 5
+          done
+          exit 1
+
+      - name: Retain sanitized publication receipt
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: official-registry-publication-${{ inputs.version }}
+          path: .ci/registry-publication-receipt.json
+          if-no-files-found: error
+          retention-days: 30
