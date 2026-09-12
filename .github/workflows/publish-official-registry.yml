@@ -76,7 +76,7 @@ jobs:
             "https://github.com/modelcontextprotocol/registry/releases/download/v${PUBLISHER_VERSION}/${archive}"
           printf '%s  %s\n' "${PUBLISHER_ARCHIVE_SHA256}" ".ci/${archive}" | sha256sum --check --strict
           tar -xzf ".ci/${archive}" -C .ci/bin mcp-publisher
-          .ci/bin/mcp-publisher --version | grep -Eq "mcp-publisher ${PUBLISHER_VERSION}( |$)"
+          .ci/bin/mcp-publisher --version 2>&1 | grep -Eq "mcp-publisher ${PUBLISHER_VERSION}( |$)"
 
       - name: Validate reviewed Registry manifest
         run: .ci/bin/mcp-publisher validate server.json
