@@ -11,6 +11,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: official-registry-publication
+  cancel-in-progress: false
+
 jobs:
   publish:
     if: github.repository == 'Sensie-agents/vibecheck' && github.ref == 'refs/heads/main'
@@ -41,7 +45,8 @@ jobs:
           test "$(printf '%s' "${RELEASE_VERSION}" | awk -F. 'NF == 3 && $1 ~ /^[0-9]+$/ && $2 ~ /^[0-9]+$/ && $3 ~ /^[0-9]+$/ { print "valid" }')" = valid
           test ! -e .ci
           mkdir -p .ci/bin
-          curl --fail --show-error --silent --location --max-time 20 \
+          curl --fail --show-error --silent --location --max-time 20 --max-filesize 1048576 \
+            --proto '=https' --proto-redir '=https' \
             --output .ci/npm.json \
             "https://registry.npmjs.org/@somacheck%2Fvibecheck/${RELEASE_VERSION}"
           test -s .ci/npm.json
@@ -65,7 +70,8 @@ jobs:
         run: |
           set -euo pipefail
           archive="mcp-publisher_linux_amd64.tar.gz"
-          curl --fail --show-error --silent --location --max-time 30 \
+          curl --fail --show-error --silent --location --max-time 30 --max-filesize 16777216 \
+            --proto '=https' --proto-redir '=https' \
             --output ".ci/${archive}" \
             "https://github.com/modelcontextprotocol/registry/releases/download/v${PUBLISHER_VERSION}/${archive}"
           printf '%s  %s\n' "${PUBLISHER_ARCHIVE_SHA256}" ".ci/${archive}" | sha256sum --check --strict
@@ -87,7 +93,8 @@ jobs:
         run: |
           set -euo pipefail
           for attempt in 1 2 3 4 5; do
-            curl --fail --show-error --silent --location --max-time 20 \
+            curl --fail --show-error --silent --location --max-time 20 --max-filesize 1048576 \
+              --proto '=https' --proto-redir '=https' \
               --output .ci/registry.json "${REGISTRY_LATEST_URL}"
             if node .github/scripts/verify-registry-publication.mjs readback \
               --registry-response .ci/registry.json \
