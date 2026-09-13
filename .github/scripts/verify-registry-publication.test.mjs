@@ -1,6 +1,11 @@
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
+import { execFile } from "node:child_process";
+import { existsSync } from "node:fs";
+import { chmod, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import test from "node:test";
+import { promisify } from "node:util";
 
 import {
   EXPECTED_PACKAGE,
@@ -15,6 +20,7 @@ const manifest = JSON.parse(await readFile(new URL("../../server.json", import.m
 const wrapper = JSON.parse(await readFile(new URL("../../package.json", import.meta.url), "utf8"));
 const lock = JSON.parse(await readFile(new URL("../../package-lock.json", import.meta.url), "utf8"));
 const version = manifest.version;
+const execFileAsync = promisify(execFile);
 const integrity = lock.packages["node_modules/@somacheck/vibecheck"].integrity;
 const npmMetadata = {
   name: EXPECTED_PACKAGE,
@@ -119,6 +125,7 @@ test("workflow is manual, main-only, checksum/action pinned, and gates before OI
   assert.match(workflow, /actions\/upload-artifact@[0-9a-f]{40}/);
   assert.match(workflow, /persist-credentials: false/);
   assert.match(workflow, /PUBLISHER_ARCHIVE_SHA256: [0-9a-f]{64}/);
+  assert.match(workflow, /mcp-publisher --version 2>&1 \| grep -Eq/);
   assert.equal(workflow.match(/--proto '=https' --proto-redir '=https'/g)?.length, 3);
   assert.equal(workflow.match(/--max-filesize /g)?.length, 3);
   assert.doesNotMatch(workflow, /secrets\.|GITHUB_TOKEN|personal.access|\bPAT\b/i);
@@ -127,4 +134,39 @@ test("workflow is manual, main-only, checksum/action pinned, and gates before OI
   const login = workflow.indexOf("mcp-publisher login github-oidc");
   const publish = workflow.indexOf("mcp-publisher publish server.json");
   assert.ok(preflight > 0 && preflight < validate && validate < login && login < publish);
+});
+
+function publisherVersionCommand(workflow, publisherPath) {
+  const line = workflow.split("\n").find((candidate) =>
+    candidate.includes("mcp-publisher --version") && candidate.includes("grep -Eq"));
+  assert.ok(line, "workflow publisher version check must be extractable");
+  const quotedPath = `'${publisherPath.replaceAll("'", `'"'"'`)}'`;
+  return line.trim().replace(".ci/bin/mcp-publisher", quotedPath);
+}
+
+async function runPublisherVersionCheck(command, expectedVersion = "1.8.1") {
+  return execFileAsync("bash", ["-o", "pipefail", "-c", command], {
+    env: { ...process.env, PUBLISHER_VERSION: expectedVersion },
+  });
+}
+
+test("extracted workflow check accepts the actual Darwin publisher stderr banner", {
+  skip: process.platform !== "darwin" || !existsSync("/opt/homebrew/bin/mcp-publisher"),
+}, async () => {
+  const workflow = await readFile(new URL("../workflows/publish-official-registry.yml", import.meta.url), "utf8");
+  await runPublisherVersionCheck(publisherVersionCommand(workflow, "/opt/homebrew/bin/mcp-publisher"));
+});
+
+test("extracted workflow check fails closed for a wrong version and a nonzero publisher", async (t) => {
+  const workflow = await readFile(new URL("../workflows/publish-official-registry.yml", import.meta.url), "utf8");
+  const fixture = await mkdtemp(join(tmpdir(), "mcp-publisher-version-"));
+  t.after(() => rm(fixture, { recursive: true }));
+  const wrong = join(fixture, "wrong-version");
+  const failing = join(fixture, "nonzero");
+  await writeFile(wrong, "#!/bin/sh\necho 'mcp-publisher 1.8.0 (fixture)' >&2\n");
+  await writeFile(failing, "#!/bin/sh\necho 'mcp-publisher 1.8.1 (fixture)' >&2\nexit 7\n");
+  await chmod(wrong, 0o755);
+  await chmod(failing, 0o755);
+  await assert.rejects(runPublisherVersionCheck(publisherVersionCommand(workflow, wrong)));
+  await assert.rejects(runPublisherVersionCheck(publisherVersionCommand(workflow, failing)));
 });
