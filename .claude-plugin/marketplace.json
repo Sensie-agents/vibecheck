@@ -11,7 +11,7 @@
       "name": "vibecheck",
       "source": ".",
       "description": "Turn a consented three-second phone gesture into context Claude can use, while you remain the authority.",
-      "version": "0.6.16",
+      "version": "0.6.17",
       "author": {
         "name": "Sensie",
         "email": "agents@joinsensie.com"

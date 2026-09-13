@@ -4,7 +4,7 @@
       "command": "npx",
       "args": [
         "-y",
-        "@somacheck/vibecheck@0.6.15",
+        "@somacheck/vibecheck@0.6.16",
         "serve",
         "--client",
         "claude",

@@ -3,7 +3,7 @@
   "name": "io.github.Sensie-agents/vibecheck",
   "title": "SomaCheck Vibecheck",
   "description": "Body language for AI agents, on your terms. A consented SomaCheck signal, with you as the authority.",
-  "version": "0.6.15",
+  "version": "0.6.16",
   "websiteUrl": "https://somacheck.com/docs/hosted-mcp",
   "remotes": [
     {
@@ -15,7 +15,7 @@
     {
       "registryType": "npm",
       "identifier": "@somacheck/vibecheck",
-      "version": "0.6.15",
+      "version": "0.6.16",
       "transport": {
         "type": "stdio"
       }
