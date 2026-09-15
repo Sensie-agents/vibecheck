@@ -1,10 +1,13 @@
 # vibecheck by Sensie
 
-**Body language for AI agents, on your terms.** SomaCheck turns a consented three-second phone gesture into an Aligned or Unaligned signal with confidence, giving your agent context for how a thought or choice lands for you, while you remain the authority.
+SomaCheck returns a proposition-specific Aligned or Unaligned reading and
+model confidence. Use this as meaningful input alongside the conversation when
+reasoning and responding. Confidence describes the classifier’s uncertainty.
 
 The agent never receives raw motion data and cannot use a result as truth,
-diagnosis, authorization, approval, or a decision. The signal is context for
-reflection; you decide what it means and what happens next.
+diagnosis, authorization, approval, or a decision. The reading is input for
+reasoning alongside the conversation; it does not establish a cause or correct
+response.
 
 ## Tools
 
@@ -71,11 +74,9 @@ your agent sent, (b) the binary reading (**Aligned** or **Unaligned**), and
 `request_id`. The reading is derived from your phone gesture, but the returned
 record alone is not independent proof of what your phone displayed.
 **Only your own observation of what your phone actually showed you
-confirms the phone display.** The reading is context, never truth,
-diagnosis, authorization, approval, or a decision; you remain the
-authority. A binary reading of **Unaligned** does not by itself prescribe
-a pause or a meaning — you interpret it in your own context, and you
-choose what to do next.
+confirms the phone display.** Use the reading and confidence as meaningful
+input alongside the conversation when reasoning and responding. It does not
+establish a cause, correct response, authorization, approval, or decision.
 
 If the request is still pending, **keep the same `request_id` handle** and
 poll `get_vibecheck_result` about every 15 seconds until the status is
@@ -93,9 +94,9 @@ Example (non-sensitive, no efficacy claim):
 This is a *hypothetical* prompt — the only real outcome is the actual
 returned result your phone and this server produce together. For example,
 **if the actual returned result is `Unaligned` with confidence 0.71**, the
-reading is a model interpretation relative to the proposition, not its cause;
-the agent may offer to help you reframe the proposition, and *you* decide
-whether the original still holds. **If the actual returned result is
+use that reading and confidence as meaningful input alongside the conversation
+when reasoning and responding. It does not establish a cause or correct response.
+**If the actual returned result is
 `Cancelled`, the request has been terminated and the handle is no longer
 polled.** **If the phone is unreachable** (no display, no prompt, no
 network), keep and check the same handle, then check delivery, account, and
@@ -141,20 +142,20 @@ Install the [SomaCheck public beta](https://testflight.apple.com/join/C4mAH3zz) 
 Get `<CODE>` from SomaCheck's **Settings > Agent > Connect your agent**, then link the local runtime:
 
 ```text
-npx -y @somacheck/vibecheck@0.6.16 link <CODE> --client claude
+npx -y @somacheck/vibecheck@0.6.17 link <CODE> --client claude
 ```
 
 Already linked? Install or repair the managed Claude setup without linking again:
 
 ```text
-npx -y @somacheck/vibecheck@0.6.16 setup claude
+npx -y @somacheck/vibecheck@0.6.17 setup claude
 ```
 
 Both commands install or update the public plugin, migrate recognized old
 SomaCheck registrations, and enable Claude's native marketplace auto-updates
 (`autoUpdate: true`) for `somacheck`. Unrelated configuration is preserved;
 custom or ambiguous registrations require review and are not silently replaced.
-This release is **plugin 0.6.17**, launching **runtime 0.6.16**. These version
+This release is **plugin 0.6.18**, launching **runtime 0.6.17**. These version
 numbers are independent.
 
 Future reviewed plugin releases can update through Claude's marketplace.
@@ -190,7 +191,7 @@ The Glama release represents the **local stdio runtime**, not the separately hos
 For a single person's self-hosted local use, mount that person's existing link configuration read-only:
 
 ```text
-docker run --rm -i -v "$HOME/.sensie:/home/node/.sensie:ro" somacheck-vibecheck:0.6.16
+docker run --rm -i -v "$HOME/.sensie:/home/node/.sensie:ro" somacheck-vibecheck:0.6.17
 ```
 
 Never bake a pairing code, token, or `config.json` into the image. Do not share one mounted configuration between people or use this image as a multi-tenant service. Glama schema discovery alone is not evidence of an authenticated phone round trip.

@@ -1,9 +1,8 @@
 # SomaCheck for Cursor
 
-**Body language for AI agents, on your terms.** SomaCheck turns a consented
-three-second phone gesture into an Aligned or Unaligned signal with confidence,
-giving Cursor context for how a thought or choice lands for you, while you
-remain the authority.
+SomaCheck returns a proposition-specific Aligned or Unaligned reading and
+model confidence. Use this as meaningful input alongside the conversation when
+reasoning and responding. Confidence describes the classifier’s uncertainty.
 
 This package contains one hosted MCP connection and one skill for Cursor.
 You need your own SomaCheck account and iPhone with the

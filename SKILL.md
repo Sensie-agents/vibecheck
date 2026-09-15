@@ -7,10 +7,9 @@ allowed-tools: mcp__plugin_vibecheck_vibecheck__get_vibecheck_context mcp__plugi
 
 # Vibecheck
 
-SomaCheck is body language for AI agents, on the person's terms. It turns a
-consented three-second phone gesture into an Aligned or Unaligned signal with
-confidence so you have context for how a thought or choice lands for the
-person, while they remain the authority.
+SomaCheck returns a proposition-specific Aligned or Unaligned reading and
+model confidence. Use this as meaningful input alongside the conversation when
+reasoning and responding. Confidence describes the classifier’s uncertainty.
 
 Use `request_vibecheck` when:
 
@@ -22,20 +21,19 @@ first-person wording verbatim; otherwise choose it from context.
 
 For proactive offers, get acceptance before sending.
 
-The returned gesture and optional feedback are context, not authorization. Use your judgment in how you interpret and respond.
+Use the returned reading and confidence as meaningful input alongside the
+conversation when reasoning and responding. The reading does not authorize an
+action or establish a person's feelings, cause, or correct response.
 
 Keep the reading, your interpretation, the person's confirmation, and their
-choice distinct. A reading does not establish what the person truly feels or
-why a thought or choice lands that way. Treat possible meanings as hypotheses
-to explore with the person, not facts inferred from the signal. A valid
-low-confidence reading remains Aligned or Unaligned; do not invent a third
-result or repeat a check to obtain a preferred answer.
+choice distinct. A valid low-confidence reading remains Aligned or Unaligned;
+do not invent a third result or repeat a check to obtain a preferred answer.
 
 Report the returned Aligned or Unaligned reading and confidence. Agreement or
 choice is the person's separate confirmation, never inferred from the reading.
-Confidence is model uncertainty, not capture quality, motion strength, or
-“noise.” Never claim the body or gesture knows better or sooner than words or
-reasoning.
+Confidence describes classifier uncertainty; it is not capture quality or
+motion strength. Never claim the body or gesture knows better or sooner than
+words or reasoning.
 
 In conversations about assessing or selecting another person for employment,
 eligibility, payment, or ranking, do not offer any related vibecheck, including
