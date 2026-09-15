@@ -3,7 +3,7 @@
   "name": "io.github.Sensie-agents/vibecheck",
   "title": "SomaCheck Vibecheck",
   "description": "SomaCheck returns proposition-specific Aligned or Unaligned plus model confidence.",
-  "version": "0.6.17",
+  "version": "0.6.18",
   "websiteUrl": "https://somacheck.com/docs/hosted-mcp",
   "remotes": [
     {
@@ -15,7 +15,7 @@
     {
       "registryType": "npm",
       "identifier": "@somacheck/vibecheck",
-      "version": "0.6.17",
+      "version": "0.6.18",
       "transport": {
         "type": "stdio"
       }

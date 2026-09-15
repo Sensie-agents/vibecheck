@@ -51,7 +51,7 @@ test("rejects a namespace that does not match the public repository owner", () =
 });
 
 test("rejects an input version that differs from reviewed manifests", () => {
-  const result = preflight({ requestedVersion: "0.6.18" });
+  const result = preflight({ requestedVersion: "0.6.19" });
   assert.equal(result.valid, false);
   assert.ok(result.errors.includes("manifest-version-mismatch"));
   assert.ok(result.errors.includes("runtime-version-mismatch"));
