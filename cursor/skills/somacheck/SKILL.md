@@ -15,7 +15,6 @@ When the person asks, choose a concise, first-person proposition from the contex
 SomaCheck returns a proposition-specific **Aligned** or **Unaligned** reading
 and model confidence. Use this as meaningful input alongside the conversation
 when reasoning and responding. Confidence describes the classifier’s
-uncertainty. The signal is not authorization to act or a test of code
-correctness or anyone's performance.
+uncertainty.
 
 If a request is pending, use `get_vibecheck_result` with its returned `request_id` instead of creating a duplicate. If phone delivery failed or was skipped, help the person follow the returned setup instructions first. Never include secrets, source code, or raw private content in a proposition, and never use SomaCheck to assess anyone other than the person you are working with.

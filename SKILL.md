@@ -7,33 +7,41 @@ allowed-tools: mcp__plugin_vibecheck_vibecheck__get_vibecheck_context mcp__plugi
 
 # Vibecheck
 
+SomaCheck is body language for AI agents, on the person's terms. It turns a
+consented three-second phone gesture into an Aligned or Unaligned signal.
+
 SomaCheck returns a proposition-specific Aligned or Unaligned reading and
-model confidence. Use this as meaningful input alongside the conversation when
-reasoning and responding. Confidence describes the classifier’s uncertainty.
+model confidence. Use this as meaningful input alongside the conversation
+when reasoning and responding. Confidence describes the classifier’s
+uncertainty.
 
 Use `request_vibecheck` when:
 
 1. You proactively offer one when useful.
 2. The person asks for a vibecheck.
 
-When asked, send a useful statement starting “I” or “My”. Preserve supplied
+When asked, send a useful statement starting "I" or "My". Preserve supplied
 first-person wording verbatim; otherwise choose it from context.
 
 For proactive offers, get acceptance before sending.
 
-Use the returned reading and confidence as meaningful input alongside the
-conversation when reasoning and responding. The reading does not authorize an
-action or establish a person's feelings, cause, or correct response.
+If a request is pending, keep the returned `live:<uuid>` handle instead of creating a replacement.
 
-Keep the reading, your interpretation, the person's confirmation, and their
-choice distinct. A valid low-confidence reading remains Aligned or Unaligned;
-do not invent a third result or repeat a check to obtain a preferred answer.
+A valid low-confidence reading remains Aligned or Unaligned; do not invent a third
+result or repeat to obtain a preferred answer.
 
-Report the returned Aligned or Unaligned reading and confidence. Agreement or
-choice is the person's separate confirmation, never inferred from the reading.
-Confidence describes classifier uncertainty; it is not capture quality or
-motion strength. Never claim the body or gesture knows better or sooner than
-words or reasoning.
+The result carries the exact proposition, its `request_id`, the Aligned or
+Unaligned verdict, classifier confidence as a number on the 0..1 scale,
+status or error information, and any optional separately stored feedback.
+`request_vibecheck` returns a `pending` or `answered` state.
+`get_vibecheck_result` returns lifecycle `status` of `queued`, `pending`,
+`answered`, `expired`, `cancelled`, or `error`. `delivery_state`
+(`queued`, `processing`, `sent`, `failed`, `skipped`) and `error_code`
+are separate fields, not lifecycle states. An unreadable capture is a capture-quality outcome and must be retried; it is not a status.
+Creation uses a fresh `idempotency_key` UUID; polling reuses the returned
+`live:<uuid>` request handle and never issues a second create.
+Authentication and account scoping gate every tool call; one person-scoped
+ask at a time.
 
 In conversations about assessing or selecting another person for employment,
 eligibility, payment, or ranking, do not offer any related vibecheck, including
@@ -41,6 +49,4 @@ on the user's confidence, readiness, evidence, judgment, or interview
 performance. Use ordinary discussion only for that decision. The user's own
 personal career choices remain eligible for self-reflection.
 
-Never include secrets, raw private content, diagnostic claims, or use SomaCheck to assess anyone other than the person you are interacting with.
-
-If a request is pending, keep the returned `live:<uuid>` handle instead of creating a replacement.
+Never include secrets, raw private content, diagnostic claims, or use SomaCheck to assess anyone other than the person you are interacting with. Raw motion never reaches agents or external models. Do not write a vibecheck reading, proposition, or confidence value into research, survey, employee-feedback, polling, growth, or analytics outputs.

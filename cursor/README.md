@@ -114,8 +114,7 @@ public endpoint checks do not establish that this host acceptance passed.
    a new request. `get_vibecheck_status` reports the reflection cache, not the
    individual request's result.
 4. **Result:** the agent receives **Aligned** or **Unaligned** plus a
-   confidence value, and uses it as context — never as an instruction,
-   authorization, or assessment of you.
+   confidence value, and uses it as context.
 5. **Revoke:** disconnect the plugin's OAuth grant from your SomaCheck
    account settings at any time. A revoked connection fails safely on the
    next request; no result is invented and no other identity is substituted.

@@ -3,16 +3,14 @@
 Manual merge instructions for adding SomaCheck to the Windsurf (now branded
 **Devin Desktop / Cascade**) MCP user config.
 
-Interpretive contract:
+Contract:
 
 > SomaCheck returns a proposition-specific **Aligned** or **Unaligned** reading
 > and model confidence. Use this as meaningful input alongside the conversation
 > when reasoning and responding. Confidence describes the classifier’s
 > uncertainty.
 
-The reading is context, never truth, diagnosis, authorization, approval,
-or a decision. Raw motion never reaches the agent or any external model
-provider.
+Raw motion never reaches the agent or any external model provider.
 
 ## Config location
 
@@ -93,15 +91,9 @@ marketplace listing have **not yet been verified** in this build.
   `expired`, `cancelled`, or `revoked`. Recheck with a bounded interval;
   do not poll indefinitely, and do not start a second vibecheck in
   parallel.
-- An **Unaligned** reading is a model reading relative to the proposition.
-  Use it as meaningful input alongside the conversation when reasoning and
-  responding; it does not establish a cause or correct response.
 - Vibechecks can be **cancelled or expire**. Treat a missing or
   expired result as no signal rather than an Unaligned reading.
 - **Revoke** the host's access any time by revoking the named
   connection in your SomaCheck account or agent settings.
   Revocation is immediate; the next call will fail until the host
   completes OAuth again.
-- No diagnosis, performance, decision, or authorization claim is
-  made about any reading. The signal is context for the person and
-  the agent; the person decides.

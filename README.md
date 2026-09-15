@@ -4,10 +4,7 @@ SomaCheck returns a proposition-specific Aligned or Unaligned reading and
 model confidence. Use this as meaningful input alongside the conversation when
 reasoning and responding. Confidence describes the classifier’s uncertainty.
 
-The agent never receives raw motion data and cannot use a result as truth,
-diagnosis, authorization, approval, or a decision. The reading is input for
-reasoning alongside the conversation; it does not establish a cause or correct
-response.
+The agent never receives raw motion data.
 
 ## Tools
 
@@ -15,12 +12,11 @@ The vibecheck MCP server exposes exactly six tools. Only `request_vibecheck`
 creates an immediate phone ask; `post_vibecheck_statement` only stocks the
 optional feed when you ask it to. Raw motion and private conversation
 history never reach the agent through this connector, and a database state
-is never proof of phone display. The signal is context, not truth,
-diagnosis, authorization, approval, or a decision.
+is never proof of phone display.
 
 | Tool | Purpose |
 | --- | --- |
-| `request_vibecheck` | Send one consented first-person statement to your phone for an immediate vibecheck. The only tool that creates an immediate phone ask; waits up to 45 seconds for the answer. The result is context, not authorization. |
+| `request_vibecheck` | Send one consented first-person statement to your phone for an immediate vibecheck. The only tool that creates an immediate phone ask; waits up to 45 seconds for the answer. |
 | `get_vibecheck_result` | Read one exact vibecheck by `request_id`. Use this to keep polling an immediate ask about every 15 seconds until the status is answered or expired. |
 | `get_vibecheck_context` | Read your recent completed check-ins, newest first, so the agent can use prior outcomes as contextual signals. |
 | `get_vibecheck_status` | Read the SomaCheck reflection-feed status before optional posting. Database state does not verify phone display. Use `get_vibecheck_context` for recent completed check-ins. |
@@ -74,9 +70,7 @@ your agent sent, (b) the binary reading (**Aligned** or **Unaligned**), and
 `request_id`. The reading is derived from your phone gesture, but the returned
 record alone is not independent proof of what your phone displayed.
 **Only your own observation of what your phone actually showed you
-confirms the phone display.** Use the reading and confidence as meaningful
-input alongside the conversation when reasoning and responding. It does not
-establish a cause, correct response, authorization, approval, or decision.
+confirms the phone display.**
 
 If the request is still pending, **keep the same `request_id` handle** and
 poll `get_vibecheck_result` about every 15 seconds until the status is
@@ -93,19 +87,15 @@ Example (non-sensitive, no efficacy claim):
 
 This is a *hypothetical* prompt — the only real outcome is the actual
 returned result your phone and this server produce together. For example,
-**if the actual returned result is `Unaligned` with confidence 0.71**, the
-use that reading and confidence as meaningful input alongside the conversation
-when reasoning and responding. It does not establish a cause or correct response.
+**if the actual returned result is `Unaligned` with confidence 0.71**.
 **If the actual returned result is
 `Cancelled`, the request has been terminated and the handle is no longer
 polled.** **If the phone is unreachable** (no display, no prompt, no
 network), keep and check the same handle, then check delivery, account, and
 connection state, including whether you are signed into the same SomaCheck
-account on the phone. This is **not** an unreadable capture and does **not** call
-for a third interpretation. **If the capture itself was unreadable** (motion
+account on the phone. This is **not** an unreadable capture. **If the capture itself was unreadable** (motion
 artifact, dropped gesture, bad baseline), retry the gesture in the app against
-the original pending ask; the unreadable capture is retried, never
-reinterpreted. Create a fresh `request_vibecheck` only after the original ask
+the original pending ask; retry the gesture; do not treat the unreadable capture as a result. Create a fresh `request_vibecheck` only after the original ask
 is terminal and the person explicitly wants a new ask.
 
 ## What this repository is
@@ -215,7 +205,7 @@ Full setup, the six MCP tools, revocation, and troubleshooting for Claude Code, 
 
 ## Privacy boundary
 
-Raw motion data and conversation history never cross this connection. A vibecheck applies only to the person using SomaCheck. It is a signal, not objective truth, a diagnosis, or a decision.
+Raw motion data and conversation history never cross this connection. A vibecheck applies only to the person using SomaCheck.
 
 SomaCheck is a general wellness tool. It is not a medical device and does not diagnose or treat any condition.
 

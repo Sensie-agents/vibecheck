@@ -67,24 +67,16 @@ assert.doesNotMatch(skill, /mcp__vibecheck__/,
   "public Claude plugin skill must not retain direct-server tool names");
 assert.match(skill, /SomaCheck returns a proposition-specific Aligned or\s+Unaligned reading and\s+model confidence/i,
   "skill must state the exact interpretive contract");
-assert.match(skill, /Use this as meaningful input alongside the\s+conversation when\s+reasoning and responding/i,
+assert.match(skill, /Use this as meaningful input alongside the\s+conversation\s+when\s+reasoning and responding/i,
   "skill must use the reading as contextual input");
-assert.match(skill, /Confidence describes the classifier[’']s uncertainty/i,
+assert.match(skill, /Confidence describes (?:the )?classifier[’']s\s+uncertainty/i,
   "skill must describe confidence as classifier uncertainty");
-assert.match(skill, /reading, your interpretation, the person's confirmation, and their\s+choice distinct/i,
-  "skill must separate the reading, interpretation, confirmation, and choice");
 assert.match(skill, /low-confidence reading remains Aligned or Unaligned/i,
   "skill must preserve the binary result at low confidence");
-assert.match(skill, /statement starting “I” or “My”/i,
+assert.match(skill, /statement starting ["']I["'] or ["']My["']/i,
   "skill must make first-person proposition wording concrete");
 assert.match(skill, /Preserve supplied\s+first-person wording verbatim/i,
   "skill must preserve user-supplied first-person wording");
-assert.match(skill, /Agreement or\s+choice is the person's separate confirmation/i,
-  "skill must not infer agreement or choice from a reading");
-assert.match(skill, /Confidence describes classifier uncertainty; it is not capture quality or\s+motion strength/i,
-  "skill must distinguish confidence from capture quality and signal strength");
-assert.match(skill, /Never claim the body or gesture knows better or sooner than\s+words or\s+reasoning/i,
-  "skill must not claim unsupported body-over-reasoning efficacy");
 assert.match(skill, /assessing or selecting another person for employment,\s+eligibility, payment, or ranking, do not offer any related vibecheck/i,
   "skill must prohibit every related vibecheck during third-party assessment");
 assert.match(skill, /confidence, readiness, evidence, judgment, or interview\s+performance/i,
@@ -344,7 +336,7 @@ expectFirstUseFailure(duplicateOverwrite, readme, "duplicate-overwrites-handle",
 // Fixed Unaligned interpretation must fail: "is a signal to pause" is the
 // exact fixed prescription this review asked us to remove.
 const unalignedPause = readme.replace(
-  /Use the reading and confidence as meaningful\s*\n?input alongside the conversation when reasoning and responding\./,
+  /SomaCheck returns a proposition-specific Aligned or Unaligned reading and\s*\n?model confidence\./,
   "A high-confidence *Unaligned* on the proposition is a signal to pause",
 );
 expectFirstUseFailure(unalignedPause, readme, "unaligned-prescribes-pause",
@@ -363,7 +355,7 @@ expectFirstUseFailure(droppedCancelled, readme, "dropped-cancelled-status",
 // old instruction to create a fresh MCP request must fail even when every
 // other first-use requirement remains intact.
 const freshRequestAfterUnreadable = readme.replace(
-  /retry the gesture in the app against\s*\n?the original pending ask; the unreadable capture is retried, never\s*\n?reinterpreted\. Create a fresh `request_vibecheck` only after the original ask\s*\n?is terminal and the person explicitly wants a new ask\./,
+  /retry the gesture; do not treat the unreadable capture as a result\. Create a fresh `request_vibecheck` only after the original ask\s*\n?is terminal and the person explicitly wants a new ask\./,
   "that requires a fresh `request_vibecheck` after the phone recovers; the unreadable capture is retried, never reinterpreted.",
 );
 expectFirstUseFailure(freshRequestAfterUnreadable, readme, "fresh-request-after-unreadable",
