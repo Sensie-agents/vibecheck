@@ -2,8 +2,8 @@
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.Sensie-agents/vibecheck",
   "title": "SomaCheck Vibecheck",
-  "description": "Body language for AI agents, on your terms. A consented SomaCheck signal, with you as the authority.",
-  "version": "0.6.16",
+  "description": "SomaCheck returns proposition-specific Aligned or Unaligned plus model confidence.",
+  "version": "0.6.17",
   "websiteUrl": "https://somacheck.com/docs/hosted-mcp",
   "remotes": [
     {
@@ -15,7 +15,7 @@
     {
       "registryType": "npm",
       "identifier": "@somacheck/vibecheck",
-      "version": "0.6.16",
+      "version": "0.6.17",
       "transport": {
         "type": "stdio"
       }
