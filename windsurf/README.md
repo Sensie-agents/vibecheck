@@ -3,12 +3,7 @@
 Manual merge instructions for adding SomaCheck to the Windsurf (now branded
 **Devin Desktop / Cascade**) MCP user config.
 
-Contract:
-
-> SomaCheck returns a proposition-specific **Aligned** or **Unaligned** reading
-> and model confidence. Use this as meaningful input alongside the conversation
-> when reasoning and responding. Confidence describes the classifier’s
-> uncertainty.
+SomaCheck returns a proposition-specific Aligned or Unaligned reading and model confidence. Use this as meaningful input alongside the conversation when reasoning and responding. Confidence describes the classifier’s uncertainty.
 
 Raw motion never reaches the agent or any external model provider.
 
