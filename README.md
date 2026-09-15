@@ -132,20 +132,20 @@ Install the [SomaCheck public beta](https://testflight.apple.com/join/C4mAH3zz) 
 Get `<CODE>` from SomaCheck's **Settings > Agent > Connect your agent**, then link the local runtime:
 
 ```text
-npx -y @somacheck/vibecheck@0.6.17 link <CODE> --client claude
+npx -y @somacheck/vibecheck@0.6.18 link <CODE> --client claude
 ```
 
 Already linked? Install or repair the managed Claude setup without linking again:
 
 ```text
-npx -y @somacheck/vibecheck@0.6.17 setup claude
+npx -y @somacheck/vibecheck@0.6.18 setup claude
 ```
 
 Both commands install or update the public plugin, migrate recognized old
 SomaCheck registrations, and enable Claude's native marketplace auto-updates
 (`autoUpdate: true`) for `somacheck`. Unrelated configuration is preserved;
 custom or ambiguous registrations require review and are not silently replaced.
-This release is **plugin 0.6.18**, launching **runtime 0.6.17**. These version
+This release is **plugin 0.6.19**, launching **runtime 0.6.18**. These version
 numbers are independent.
 
 Future reviewed plugin releases can update through Claude's marketplace.
@@ -181,7 +181,7 @@ The Glama release represents the **local stdio runtime**, not the separately hos
 For a single person's self-hosted local use, mount that person's existing link configuration read-only:
 
 ```text
-docker run --rm -i -v "$HOME/.sensie:/home/node/.sensie:ro" somacheck-vibecheck:0.6.17
+docker run --rm -i -v "$HOME/.sensie:/home/node/.sensie:ro" somacheck-vibecheck:0.6.18
 ```
 
 Never bake a pairing code, token, or `config.json` into the image. Do not share one mounted configuration between people or use this image as a multi-tenant service. Glama schema discovery alone is not evidence of an authenticated phone round trip.
