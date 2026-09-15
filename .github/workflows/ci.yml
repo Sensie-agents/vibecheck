@@ -170,11 +170,13 @@ jobs:
             || { echo "::error file=README.md::README missing 'is not a medical device'"; exit 1; }
           grep -qi "does not diagnose" README.md \
             || { echo "::error file=README.md::README missing 'does not diagnose'"; exit 1; }
-          # README must describe a signal, not truth/authorization.
+          # README must carry the complete reviewed interpretive contract.
           grep -qi "signal" README.md \
             || { echo "::error file=README.md::README must describe vibecheck as a signal"; exit 1; }
-          grep -qi "you remain the authority\|you are the authority\|the person remains the authority" README.md \
-            || { echo "::error file=README.md::README must state the human remains the authority"; exit 1; }
+          grep -Fq "SomaCheck returns a proposition-specific" README.md \
+            || { echo "::error file=README.md::README missing the reviewed interpretive contract"; exit 1; }
+          grep -Fq "Confidence describes the classifier's uncertainty" README.md \
+            || { echo "::error file=README.md::README missing confidence uncertainty wording"; exit 1; }
           grep -Fq "Body language for AI agents, on your terms." README.md \
             || { echo "::error file=README.md::README missing the canonical AI-agent value proposition"; exit 1; }
           # README must NOT claim a specific Glama percentage or score; if a
