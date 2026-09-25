@@ -1,7 +1,10 @@
 # vibecheck by Sensie
 
 SomaCheck returns a proposition-specific Aligned or Unaligned reading and
-model confidence. Use this as meaningful input alongside the conversation when
+model confidence. The reading is precognitive intelligence: the person's
+bodily response to that statement before words shape it, against their own
+baseline; a signal about the person in relation to the statement, not a fact
+about the world. Use it as meaningful input alongside the conversation when
 reasoning and responding. Confidence describes the classifier’s uncertainty.
 
 The agent never receives raw motion data.
@@ -16,12 +19,12 @@ is never proof of phone display.
 
 | Tool | Purpose |
 | --- | --- |
-| `request_vibecheck` | Send one consented first-person statement to your phone for an immediate vibecheck. The only tool that creates an immediate phone ask; waits up to 45 seconds for the answer. |
-| `get_vibecheck_result` | Read one exact vibecheck by `request_id`. Use this to keep polling an immediate ask about every 15 seconds until the status is answered or expired. |
-| `get_vibecheck_context` | Read your recent completed check-ins, newest first, so the agent can use prior outcomes as contextual signals. |
-| `get_vibecheck_status` | Read the SomaCheck reflection-feed status before optional posting. Database state does not verify phone display. Use `get_vibecheck_context` for recent completed check-ins. |
-| `post_vibecheck_statement` | Stock the optional SomaCheck feed with up to three personalized reflections for the person to consider later. Optional feed stock only; this is not an immediate phone ask and does not verify delivery. |
-| `share_somacheck_context` | Share 1-20 concise, user-authorized context observations so SomaCheck can prepare richer propositions. Send derived summaries only; never raw conversation text, photos, credentials, identifiers, or diagnostic claims. |
+| `request_vibecheck` | Ask the person's body now: send one statement to their phone and wait up to 45 seconds for a precognitive reading, Aligned or Unaligned. |
+| `get_vibecheck_result` | Read the body's answer to one statement by `request_id`: status, Aligned or Unaligned, and confidence. Non-blocking; poll while pending. |
+| `get_vibecheck_context` | Read the person's recent completed readings, newest first, as precognitive context. Not for one pending ask. |
+| `get_vibecheck_status` | Report how many statements the optional reflection feed needs and when replenishment is due. Says nothing about the phone or any reading. |
+| `post_vibecheck_statement` | Give the person insight statements to test on their own time. Adds one to three items to the optional reflection feed, returns immediately, never notifies the phone. |
+| `share_somacheck_context` | Share 1–20 bounded, derived, user-authorized observations; raw conversations and secrets are rejected. |
 
 ## First successful vibecheck
 
@@ -132,20 +135,20 @@ Install the [SomaCheck public beta](https://testflight.apple.com/join/C4mAH3zz) 
 Get `<CODE>` from SomaCheck's **Settings > Agent > Connect your agent**, then link the local runtime:
 
 ```text
-npx -y @somacheck/vibecheck@0.6.18 link <CODE> --client claude
+npx -y @somacheck/vibecheck@0.6.20 link <CODE> --client claude
 ```
 
 Already linked? Install or repair the managed Claude setup without linking again:
 
 ```text
-npx -y @somacheck/vibecheck@0.6.18 setup claude
+npx -y @somacheck/vibecheck@0.6.20 setup claude
 ```
 
 Both commands install or update the public plugin, migrate recognized old
 SomaCheck registrations, and enable Claude's native marketplace auto-updates
 (`autoUpdate: true`) for `somacheck`. Unrelated configuration is preserved;
 custom or ambiguous registrations require review and are not silently replaced.
-This release is **plugin 0.6.19**, launching **runtime 0.6.18**. These version
+This release is **plugin 0.6.20**, launching **runtime 0.6.20**. These version
 numbers are independent.
 
 Future reviewed plugin releases can update through Claude's marketplace.
@@ -181,7 +184,7 @@ The Glama release represents the **local stdio runtime**, not the separately hos
 For a single person's self-hosted local use, mount that person's existing link configuration read-only:
 
 ```text
-docker run --rm -i -v "$HOME/.sensie:/home/node/.sensie:ro" somacheck-vibecheck:0.6.18
+docker run --rm -i -v "$HOME/.sensie:/home/node/.sensie:ro" somacheck-vibecheck:0.6.20
 ```
 
 Never bake a pairing code, token, or `config.json` into the image. Do not share one mounted configuration between people or use this image as a multi-tenant service. Glama schema discovery alone is not evidence of an authenticated phone round trip.
