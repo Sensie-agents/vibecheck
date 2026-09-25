@@ -67,7 +67,7 @@ assert.doesNotMatch(skill, /mcp__vibecheck__/,
   "public Claude plugin skill must not retain direct-server tool names");
 assert.match(skill, /SomaCheck returns a proposition-specific Aligned or\s+Unaligned reading and\s+model confidence/i,
   "skill must state the exact interpretive contract");
-assert.match(skill, /Use this as meaningful input alongside the\s+conversation\s+when\s+reasoning and responding/i,
+assert.match(skill, /Use (?:this|it) as meaningful input alongside the\s+conversation\s+when\s+reasoning and responding/i,
   "skill must use the reading as contextual input");
 assert.match(skill, /Confidence describes (?:the )?classifier[’']s\s+uncertainty/i,
   "skill must describe confidence as classifier uncertainty");
