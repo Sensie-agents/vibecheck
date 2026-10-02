@@ -2,7 +2,6 @@
 name: vibecheck
 description: Give your person a consented body-language channel when words are the bottleneck.
 user-invocable: true
-allowed-tools: mcp__plugin_vibecheck_vibecheck__get_vibecheck_context mcp__plugin_vibecheck_vibecheck__get_vibecheck_status mcp__plugin_vibecheck_vibecheck__get_vibecheck_result mcp__plugin_vibecheck_vibecheck__request_vibecheck
 ---
 
 # Vibecheck
@@ -28,7 +27,7 @@ first-person wording verbatim; otherwise choose it from context.
 
 An offer, suggestion, or silence is not acceptance.
 
-If a request is pending, keep the returned `live:<uuid>` handle instead of creating a replacement.
+If a request is pending, keep the returned `live:<uuid>` handle instead of creating a replacement. While the turn remains active, call `get_vibecheck_result` on that same handle about every 15 seconds until answered, expired, or cancelled. A delivery acknowledgement alone does not prove the phone displayed the prompt. If the turn ends, retain the handle for the person's next request to check it; do not create a duplicate phone ask.
 
 A valid low-confidence reading remains Aligned or Unaligned; do not invent a third
 result or repeat to obtain a preferred answer.

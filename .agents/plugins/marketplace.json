@@ -1,0 +1,20 @@
+{
+  "name": "somacheck-local",
+  "interface": {
+    "displayName": "SomaCheck"
+  },
+  "plugins": [
+    {
+      "name": "vibecheck",
+      "source": {
+        "source": "local",
+        "path": "./plugins/vibecheck"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}
