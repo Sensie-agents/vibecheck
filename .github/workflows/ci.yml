@@ -133,6 +133,9 @@ jobs:
           set -euo pipefail
           for f in README.md SKILL.md LICENSE glama.json .mcp.json \
                    .claude-plugin/plugin.json .claude-plugin/marketplace.json \
+                   .agents/plugins/marketplace.json \
+                   plugins/vibecheck/plugin.json plugins/vibecheck/mcp.json \
+                   plugins/vibecheck/skills/vibecheck/SKILL.md \
                    Dockerfile package.json package-lock.json \
                    .github/scripts/verify-mcp-runtime.mjs \
                    .github/scripts/verify-readme-tools-index.mjs \

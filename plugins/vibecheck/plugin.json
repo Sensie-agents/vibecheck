@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "vibecheck",
-  "version": "0.6.20",
+  "version": "0.6.21",
   "description": "SomaCheck returns a consented, proposition-specific Aligned or Unaligned reading and model confidence from the person's own phone gesture.",
   "author": {
     "name": "Sensie",

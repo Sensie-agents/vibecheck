@@ -110,8 +110,9 @@ is terminal and the person explicitly wants a new ask.
 
 This public repository contains the **Claude marketplace manifest** (`.claude-plugin/marketplace.json`), the **Claude plugin manifest** (`.claude-plugin/plugin.json`), the **agent skill** (`SKILL.md`), and a **bundled local Channel server** (`.mcp.json`). The Channel lets an authorized phone result enter the same open Claude Code conversation so Claude can continue without another typed message.
 
-The portable Codex package uses `plugin.json`, `mcp.json`,
-`skills/vibecheck/SKILL.md`, and `.agents/plugins/marketplace.json`. Its
+The portable Codex package lives under `plugins/vibecheck/` with its own
+`plugin.json`, `mcp.json`, and `skills/vibecheck/SKILL.md`;
+`.agents/plugins/marketplace.json` points to that package. Its
 local stdio server uses `@somacheck/vibecheck@0.6.20` with `--client codex`.
 The local marketplace is a direct install path; it is separate from the
 ChatGPT and Codex public directory submission already under review.
@@ -184,7 +185,7 @@ Both commands install or update the public plugin, migrate recognized old
 SomaCheck registrations, and enable Claude's native marketplace auto-updates
 (`autoUpdate: true`) for `somacheck`. Unrelated configuration is preserved;
 custom or ambiguous registrations require review and are not silently replaced.
-This release is **plugin 0.6.20**, launching **runtime 0.6.20**. These version
+This release is **plugin 0.6.21**, launching **runtime 0.6.20**. These version
 numbers are independent.
 
 Future reviewed plugin releases can update through Claude's marketplace.

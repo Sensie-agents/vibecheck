@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import { readFileSync } from "node:fs";
 
 import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory.js";
 import { createVibecheckServer } from "@somacheck/vibecheck";
@@ -52,6 +53,16 @@ test("Codex exposes six tools and requires an explicit consent basis", async (t)
     "get_vibecheck_context", "get_vibecheck_result", "get_vibecheck_status",
     "post_vibecheck_statement", "request_vibecheck", "share_somacheck_context",
   ]);
+  const byName = Object.fromEntries(listed.result.tools.map((tool) => [tool.name, tool]));
+  assert.deepEqual(byName.request_vibecheck.outputSchema.properties.state.enum,
+    ["pending", "completed", "expired", "cancelled", "error"]);
+  assert.deepEqual(byName.get_vibecheck_result.outputSchema.properties.status.enum,
+    ["queued", "pending", "answered", "expired", "cancelled"]);
+  assert.equal("statement" in byName.request_vibecheck.outputSchema.properties, false);
+  assert.equal("statement" in byName.get_vibecheck_result.outputSchema.properties, false);
+  const skill = readFileSync(new URL("../../plugins/vibecheck/skills/vibecheck/SKILL.md", import.meta.url), "utf8");
+  assert.match(skill, /result schemas do not return the proposition text/i);
+  assert.match(skill, /wait for acceptance before\s+calling `request_vibecheck`/i);
   const rejected = await request(3, "tools/call", {
     name: "request_vibecheck",
     arguments: { statement: "I want to pause.", idempotency_key: key },

@@ -65,6 +65,13 @@ for (const tool of [
 }
 assert.doesNotMatch(skill, /mcp__vibecheck__/,
   "public Claude plugin skill must not retain direct-server tool names");
+assert.equal(manifest.skills, ".", "Claude must load the root SKILL.md explicitly");
+assert.match(skill, /wait for acceptance before\s+calling `request_vibecheck`/i,
+  "a proactive offer must not trigger a phone request before acceptance");
+assert.match(skill, /request_vibecheck` returns `pending`, `completed`, `expired`, `cancelled`, or\s+`error`/,
+  "request state guidance must match the 0.6.20 runtime schema");
+assert.match(skill, /result schemas do not return the proposition text/i,
+  "the skill must not claim the result includes the original statement");
 assert.match(skill, /SomaCheck returns a proposition-specific Aligned or\s+Unaligned reading and\s+model confidence/i,
   "skill must state the exact interpretive contract");
 assert.match(skill, /Use (?:this|it) as meaningful input alongside the\s+conversation\s+when\s+reasoning and responding/i,

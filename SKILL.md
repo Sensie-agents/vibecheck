@@ -17,27 +17,32 @@ baseline; a signal about the person in relation to the statement, not a fact
 about the world. Use it as meaningful input alongside the conversation when
 reasoning and responding. Confidence describes the classifier’s uncertainty.
 
-Use `request_vibecheck` when:
-
-1. You proactively offer one when useful.
-2. The person asks for a vibecheck.
+You may offer a vibecheck when it would help the person clarify their own
+thought. Show the exact first-person statement and wait for acceptance before
+calling `request_vibecheck` with `consent_basis: user_approved_statement`.
+A direct request for a vibecheck now authorizes one call with
+`consent_basis: user_requested_vibecheck`.
 
 When asked, send a useful statement starting "I" or "My". Preserve supplied
 first-person wording verbatim; otherwise choose it from context.
 
-For proactive offers, get acceptance before sending.
+An offer, suggestion, or silence is not acceptance.
 
 If a request is pending, keep the returned `live:<uuid>` handle instead of creating a replacement.
 
 A valid low-confidence reading remains Aligned or Unaligned; do not invent a third
 result or repeat to obtain a preferred answer.
 
-The result carries the exact proposition, its `request_id`, the Aligned or
-Unaligned verdict, classifier confidence as a number on the 0..1 scale,
-status or error information, and any optional separately stored feedback.
-`request_vibecheck` returns a `pending` or `answered` state.
+Keep the original proposition in the conversation beside its `request_id`.
+The request and result tools return the handle, lifecycle state, binary verdict
+when answered, classifier confidence as a number on the 0..1 scale, delivery
+or error information, and any optional separately stored feedback. Their
+result schemas do not return the proposition text.
+`request_vibecheck` returns `pending`, `completed`, `expired`, `cancelled`, or
+`error` as its `state`.
 `get_vibecheck_result` returns lifecycle `status` of `queued`, `pending`,
-`answered`, `expired`, `cancelled`, or `error`. `delivery_state`
+`answered`, `expired`, or `cancelled`. A failed tool call is an error response,
+not a sixth result status. `delivery_state`
 (`queued`, `processing`, `sent`, `failed`, `skipped`) and `error_code`
 are separate fields, not lifecycle states. An unreadable capture is a capture-quality outcome and must be retried; it is not a status.
 Creation uses a fresh `idempotency_key` UUID; polling reuses the returned

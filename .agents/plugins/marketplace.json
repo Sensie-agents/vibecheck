@@ -8,7 +8,7 @@
       "name": "vibecheck",
       "source": {
         "source": "local",
-        "path": "./"
+        "path": "./plugins/vibecheck"
       },
       "policy": {
         "installation": "AVAILABLE",
