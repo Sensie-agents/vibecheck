@@ -1,0 +1,33 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "vibecheck",
+  "version": "0.6.20",
+  "description": "SomaCheck returns a consented, proposition-specific Aligned or Unaligned reading and model confidence from the person's own phone gesture.",
+  "author": {
+    "name": "Sensie",
+    "email": "agents@joinsensie.com",
+    "url": "https://somacheck.com"
+  },
+  "homepage": "https://somacheck.com/docs/hosted-mcp",
+  "repository": "https://github.com/Sensie-agents/vibecheck",
+  "license": "MIT",
+  "keywords": ["somacheck", "vibecheck", "mcp", "self-trust"],
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "SomaCheck Vibecheck",
+        "shortDescription": "A consented signal when words are the bottleneck.",
+        "longDescription": "Ask for your own proposition-specific SomaCheck reading through a three-second phone gesture. The result is Aligned or Unaligned with model confidence, measured against your personal baseline.",
+        "developerName": "Sensie",
+        "category": "Productivity",
+        "capabilities": ["Read", "Write"],
+        "websiteURL": "https://somacheck.com",
+        "privacyPolicyURL": "https://somacheck.com/privacy",
+        "defaultPrompt": [
+          "Help me request a SomaCheck vibecheck on a statement I choose.",
+          "Check the result of my pending SomaCheck request."
+        ]
+      }
+    }
+  }
+}

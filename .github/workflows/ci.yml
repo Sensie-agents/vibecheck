@@ -247,6 +247,9 @@ jobs:
       - name: Guard Claude hosted and local profile paths
         run: node .github/scripts/verify-claude-profile.mjs
 
+      - name: Guard the Codex portable plugin and Claude Channel separation
+        run: node .github/scripts/verify-codex-profile.mjs
+
       - name: Guard the public README tools index against drift
         run: node .github/scripts/verify-readme-tools-index.mjs
 
@@ -268,6 +271,13 @@ jobs:
           set -euo pipefail
           node .github/scripts/verify-mcp-runtime.mjs \
             ./node_modules/.bin/vibecheck serve --client claude --channel
+
+      - name: Probe the Codex runtime and consented same-handle protocol
+        run: |
+          set -euo pipefail
+          node .github/scripts/verify-mcp-runtime.mjs \
+            ./node_modules/.bin/vibecheck serve --client codex
+          node --test .github/scripts/verify-codex-protocol.test.mjs
 
       - name: Build and probe the Glama container
         run: |

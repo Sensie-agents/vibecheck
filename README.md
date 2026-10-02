@@ -39,6 +39,11 @@ matches the route you choose.
   `allowedChannelPlugins`); without that acceptance, plain Claude Code does
   **not** promise automatic next-turn delivery of the answer, so you will use
   the recovery handle described below.
+- **Codex (local plugin).** Install this repository's portable plugin from the
+  `somacheck-local` marketplace as described in [Install in Codex](#install-in-codex).
+  It starts the same pinned 0.6.20 local runtime for Codex. Codex does not
+  use Claude Channels, so keep a pending request's handle and check that
+  same request again until it is terminal.
 - **Claude.ai and Claude Desktop (hosted OAuth).** The hosted OAuth route is
   served by the separately deployed MCP server at
   `https://mcp.somacheck.com/functions/v1/mcp`; the local Channel plugin does
@@ -105,6 +110,12 @@ is terminal and the person explicitly wants a new ask.
 
 This public repository contains the **Claude marketplace manifest** (`.claude-plugin/marketplace.json`), the **Claude plugin manifest** (`.claude-plugin/plugin.json`), the **agent skill** (`SKILL.md`), and a **bundled local Channel server** (`.mcp.json`). The Channel lets an authorized phone result enter the same open Claude Code conversation so Claude can continue without another typed message.
 
+The portable Codex package uses `plugin.json`, `mcp.json`,
+`skills/vibecheck/SKILL.md`, and `.agents/plugins/marketplace.json`. Its
+local stdio server uses `@somacheck/vibecheck@0.6.20` with `--client codex`.
+The local marketplace is a direct install path; it is separate from the
+ChatGPT and Codex public directory submission already under review.
+
 The hosted vibecheck MCP server itself is **not** built from this repo. It is deployed and operated separately by Sensie. The local MCP runtime, with Claude Code continuation support, is distributed under MIT as the public [`@somacheck/vibecheck`](https://www.npmjs.com/package/@somacheck/vibecheck) npm package. This repository's Dockerfile assembles that exact, locked local stdio runtime for Glama's isolated build, security scan, and tool-schema introspection. It does not contain the server source and does not prove the hosted OAuth deployment.
 
 Concretely:
@@ -118,6 +129,31 @@ Concretely:
 - `.github/workflows/ci.yml` — public CI that validates the manifests, builds and probes the Glama image, and guards the README doctrine and version drift. It uses no secrets and performs no deployment or publication.
 
 [![validate manifests](https://github.com/Sensie-agents/vibecheck/actions/workflows/ci.yml/badge.svg)](https://github.com/Sensie-agents/vibecheck/actions/workflows/ci.yml)
+
+## Install in Codex
+
+Use the checked-out repository as a local marketplace source:
+
+```text
+codex plugin marketplace add /absolute/path/to/vibecheck
+codex plugin add vibecheck@somacheck-local
+```
+
+The package starts the local stdio runtime; it does not pair your account.
+Install SomaCheck on your phone and complete its in-app setup. In the app,
+open **Settings > Agent > Connect your agent** to obtain a short-lived code,
+then link this Codex client:
+
+```text
+npx -y @somacheck/vibecheck@0.6.20 link <CODE> --client codex
+```
+
+The code is private: enter it on your own device and terminal, never in a
+plugin manifest or chat. Restart Codex after installation or linking, then
+ask for one vibecheck on your own exact first-person statement. If you already
+have a Codex `vibecheck` MCP registration, review it before using both paths;
+two server registrations can show duplicate tool sets. A pending request is
+continued with `get_vibecheck_result` on its original `request_id`.
 
 ## Install the Claude Code Channel plugin
 
