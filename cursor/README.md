@@ -6,7 +6,7 @@ reasoning and responding. Confidence describes the classifier’s uncertainty.
 
 This package contains one hosted MCP connection and one skill for Cursor.
 You need your own SomaCheck account and iPhone with the
-[SomaCheck beta](https://testflight.apple.com/join/C4mAH3zz) installed and
+[SomaCheck](https://apps.apple.com/us/app/somacheck-vibecheck/id6792978184) installed and
 in-app setup and calibration completed.
 
 ## Developer preview install
