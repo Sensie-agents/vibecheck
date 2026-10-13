@@ -165,7 +165,7 @@ claude plugin install vibecheck@somacheck
 
 Installing the plugin configures a local, plugin-scoped `vibecheck` MCP server. It reads the independently revocable Claude credential stored by the link command and never puts that credential in the plugin manifest.
 
-Install the [SomaCheck public beta](https://testflight.apple.com/join/C4mAH3zz) and complete its in-app setup first, then in the CLI or your agent's native app ask: **Give me a SomaCheck vibecheck based on what you know about me.**
+Install [SomaCheck from the App Store](https://apps.apple.com/us/app/somacheck-vibecheck/id6792978184) and complete its in-app setup first, then in the CLI or your agent's native app ask: **Give me a SomaCheck vibecheck based on what you know about me.**
 
 ## Link SomaCheck and start the Channel
 
