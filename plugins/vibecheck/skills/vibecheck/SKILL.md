@@ -1,6 +1,6 @@
 ---
 name: vibecheck
-description: Give your person a consented body-language channel when words are the bottleneck.
+description: 'Give your person a consented body-language channel when words are the bottleneck: a stuck decision, a third failed loop, before something hard to undo, or when they say they are overextended.'
 user-invocable: true
 ---
 

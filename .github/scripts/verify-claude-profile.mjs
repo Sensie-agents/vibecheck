@@ -69,7 +69,7 @@ assert.equal(manifest.skills, ".", "Claude must load the root SKILL.md explicitl
 assert.match(skill, /wait for acceptance before\s+calling `request_vibecheck`/i,
   "a proactive offer must not trigger a phone request before acceptance");
 assert.match(skill, /request_vibecheck` returns `pending`, `completed`, `expired`, `cancelled`, or\s+`error`/,
-  "request state guidance must match the 0.6.20 runtime schema");
+  "request state guidance must match the 0.6.21 runtime schema");
 assert.match(skill, /result schemas do not return the proposition text/i,
   "the skill must not claim the result includes the original statement");
 assert.match(skill, /SomaCheck returns a proposition-specific Aligned or\s+Unaligned reading and\s+model confidence/i,
