@@ -31,11 +31,12 @@ If a request is pending, keep the returned `live:<uuid>` handle instead of creat
 A valid low-confidence reading remains Aligned or Unaligned; do not invent a third
 result or repeat to obtain a preferred answer.
 
-Keep the original proposition in the conversation beside its `request_id`.
-The request and result tools return the handle, lifecycle state, binary verdict
-when answered, classifier confidence as a number on the 0..1 scale, delivery
-or error information, and any optional separately stored feedback. Their
-result schemas do not return the proposition text.
+`request_vibecheck` returns the exact proposition it sent beside its
+`request_id`; keep that pairing in the conversation. The request and result
+tools return the handle, lifecycle state, binary verdict when answered,
+classifier confidence as a number on the 0..1 scale, delivery or error
+information, and any optional separately stored feedback. The
+`get_vibecheck_result` schema does not return the proposition text.
 `request_vibecheck` returns `pending`, `completed`, `expired`, `cancelled`, or
 `error` as its `state`.
 `get_vibecheck_result` returns lifecycle `status` of `queued`, `pending`,
