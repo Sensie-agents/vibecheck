@@ -3,9 +3,8 @@
 SomaCheck returns a proposition-specific Aligned or Unaligned reading and
 model confidence. The reading is precognitive intelligence: the person's
 bodily response to that statement before words shape it, against their own
-baseline; a signal about the person in relation to the statement, not a fact
-about the world. Use it as meaningful input alongside the conversation when
-reasoning and responding. Confidence describes the classifier’s uncertainty.
+baseline; a signal about the person in relation to the statement. Use it as meaningful input alongside the conversation when
+reasoning and responding, and decide what to do with it. Confidence describes the classifier’s uncertainty.
 
 The agent never receives raw motion data.
 
