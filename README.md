@@ -9,6 +9,40 @@ reasoning and responding. Confidence describes the classifier’s uncertainty.
 
 The agent never receives raw motion data.
 
+## How people use it
+
+SomaCheck gives your agent a consented body-language signal. Your agent sends
+one proposition to your phone, you answer with a three-second gesture, and it
+gets back Aligned or Unaligned with the model's confidence: your body's
+response to that proposition, against your own baseline. Your agent uses it as
+meaningful context and makes up its own mind, the same way it would with
+anything else you gave it.
+
+Three ways people use it:
+
+- Mid-task: when words are the bottleneck, a three-second check-in can
+  re-orient the whole task. No typing out how you feel.
+- Wellbeing check-ins: after hours of grinding, or when you say you are
+  stretched thin, your agent can offer a check-in. Only ever with your OK.
+- Big decisions: before you commit, check how your body answers "I'm ready to
+  decide this." Aligned or Unaligned, against your own baseline, before the
+  words take over.
+
+Before your first check-in: install the SomaCheck app on your iPhone and sign
+in with the same account you connect in your agent. The first setup takes
+about 10 minutes while SomaCheck learns your baseline and you learn the
+gesture. Every check after that takes three seconds. iPhone only for now.
+
+The server states facts and hard boundaries: consent, privacy, and never
+evaluating another person. What a reading means, what to say next, and when
+to offer a check-in are the agent's call.
+
+Starter prompts:
+
+1. Give me a SomaCheck vibecheck on the decision I'm trying to make, and use the result to help me think it through.
+2. I've been at this for hours. Offer me a SomaCheck check-in if it would help.
+3. Before I commit to this, run a SomaCheck vibecheck on "I'm ready to decide this" and tell me what you notice.
+
 ## Tools
 
 The vibecheck MCP server exposes exactly six tools. Only `request_vibecheck`
