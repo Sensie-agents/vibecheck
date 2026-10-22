@@ -49,8 +49,8 @@ matches the route you choose.
   `https://mcp.somacheck.com/functions/v1/mcp`; the local Channel plugin does
   not change or claim that deployment. You connect Claude.ai or Claude
   Desktop to that hosted endpoint following
-  [somacheck.com/docs/hosted-mcp](https://somacheck.com/docs/hosted-mcp) —
-  this README does not assert that Anthropic's hosted OAuth path has
+  [somacheck.com/docs/hosted-mcp](https://somacheck.com/docs/hosted-mcp).
+  This README does not assert that Anthropic's hosted OAuth path has
   accepted the plugin on your behalf. Real acceptance has to be observed in
   the host, not inferred from this repository.
 - **Cursor and Windsurf.** Use the developer-preview packages in this
@@ -61,7 +61,7 @@ matches the route you choose.
   either route as already accepted.
 
 After the host is ready, ask the agent for **one consented immediate
-vibecheck**. The existing explicit ask *is* the consent — do not bolt on
+vibecheck**. The existing explicit ask *is* the consent. Do not bolt on
 redundant "are you sure?" prompts. The agent picks the tool:
 
 - **Immediate phone ask:** `request_vibecheck`. This is the only tool that
@@ -69,7 +69,7 @@ redundant "are you sure?" prompts. The agent picks the tool:
   the answer. Use it when the user wants a check-in now.
 - **Optional feed stock (not an immediate ask):** `post_vibecheck_statement`
   only stocks the reflection feed for later consideration. It does **not**
-  ask your phone and does **not** verify delivery — do not choose it when
+  ask your phone and does **not** verify delivery. Do not choose it when
   the person asked for an immediate vibecheck.
 
 The result returns three separate things: (a) the first-person statement
@@ -83,7 +83,7 @@ confirms the phone display.**
 If the request is still pending, **keep the same `request_id` handle** and
 poll `get_vibecheck_result` about every 15 seconds until the status is
 answered, expired, or cancelled. Do not create a second
-`request_vibecheck` for the same proposition just to poll status — open
+`request_vibecheck` for the same proposition just to poll status. Open
 the same SomaCheck app on the same account the original ask went to (or
 wait with the existing handle) instead. Wasting a phone ask on a duplicate
 is its own problem; preserving the original handle is the recovery path.
@@ -93,7 +93,7 @@ Example (non-sensitive, no efficacy claim):
 > Agent, give me a vibecheck on "I want to commit to this direction for the
 > rest of the week."
 
-This is a *hypothetical* prompt — the only real outcome is the actual
+This is a *hypothetical* prompt. The only real outcome is the actual
 returned result your phone and this server produce together. For example,
 **if the actual returned result is `Unaligned` with confidence 0.71**.
 **If the actual returned result is
@@ -121,13 +121,13 @@ The hosted vibecheck MCP server itself is **not** built from this repo. It is de
 
 Concretely:
 
-- `SKILL.md` — what Claude reads to decide when a vibecheck would help.
-- `.claude-plugin/marketplace.json` — Claude marketplace listing for `claude plugin marketplace add …`.
-- `.claude-plugin/plugin.json` — declares the `vibecheck` MCP server as a Claude Channel.
-- `.mcp.json` — launches the pinned public npm runtime locally over stdio with Channel support.
-- `glama.json` — declares maintainers for the Glama MCP registry; see [Glama docs](https://glama.ai/mcp/methodology).
-- `Dockerfile`, `package.json`, and `package-lock.json` — reproducible, non-root Glama image for the local stdio runtime. The image contains no SomaCheck account credential.
-- `.github/workflows/ci.yml` — public CI that validates the manifests, builds and probes the Glama image, and guards the README doctrine and version drift. It uses no secrets and performs no deployment or publication.
+- `SKILL.md`: what Claude reads to decide when a vibecheck would help.
+- `.claude-plugin/marketplace.json`: Claude marketplace listing for `claude plugin marketplace add …`.
+- `.claude-plugin/plugin.json`: declares the `vibecheck` MCP server as a Claude Channel.
+- `.mcp.json`: launches the pinned public npm runtime locally over stdio with Channel support.
+- `glama.json`: declares maintainers for the Glama MCP registry; see [Glama docs](https://glama.ai/mcp/methodology).
+- `Dockerfile`, `package.json`, and `package-lock.json`: reproducible, non-root Glama image for the local stdio runtime. The image contains no SomaCheck account credential.
+- `.github/workflows/ci.yml`: public CI that validates the manifests, builds and probes the Glama image, and guards the README doctrine and version drift. It uses no secrets and performs no deployment or publication.
 
 [![validate manifests](https://github.com/Sensie-agents/vibecheck/actions/workflows/ci.yml/badge.svg)](https://github.com/Sensie-agents/vibecheck/actions/workflows/ci.yml)
 

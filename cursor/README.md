@@ -16,10 +16,10 @@ remain open. The package also includes the
 [Cursor plugin manifest](https://cursor.com/docs/reference/plugins) for
 marketplace submission. Project setup uses Cursor's documented locations:
 
-1. **MCP server** — the one entry from this package's `mcp.json` merged into
+1. **MCP server**: the one entry from this package's `mcp.json` merged into
    your project's `.cursor/mcp.json` (created if it doesn't exist). Merged,
    not overwritten: any servers already declared there survive untouched.
-2. **Skill** — `skills/somacheck/SKILL.md` from this package copied to
+2. **Skill**: `skills/somacheck/SKILL.md` from this package copied to
    `.cursor/skills/somacheck/SKILL.md` in your project. Cursor's
    [Agent Skills docs](https://cursor.com/docs/skills) list `.cursor/skills/`
    as a project-level skill discovery location, loaded automatically on
@@ -30,7 +30,7 @@ From this package's directory (the directory containing this README),
 `scripts/preview-install.mjs` automates steps 1–2 for your chosen project:
 
 ```
-# Preview only — writes nothing, prints what would change.
+# Preview only: writes nothing, prints what would change.
 node scripts/preview-install.mjs --project /path/to/your/project
 
 # Write the merge/copy above. Safe to run more than once: an already
@@ -48,7 +48,7 @@ headers, a `command`, or a different URL), an existing skill file with
 different content, malformed or non-object JSON, or any symlinked/escaping
 target path all fail with **no writes**, to either target. Both targets are
 preflighted before anything is written, and if writing the second target ever
-fails after the first succeeded, the first write is rolled back — it never
+fails after the first succeeded, the first write is rolled back. It never
 deletes a pre-existing file or directory it didn't itself create. If a
 concurrent edit is detected during rollback, that user content is left
 untouched and the command reports that manual review is required. It does
@@ -59,7 +59,7 @@ This is a **developer preview**, not marketplace-plugin-install proof: it
 confirms the MCP server and skill content are usable inside Cursor's
 documented config locations, not that this specific `.cursor-plugin/`
 bundle format loads through any packaged installer, and not that Cursor
-itself has loaded or verified the result — run `--verify` after installing
+itself has loaded or verified the result. Run `--verify` after installing
 to re-check the files on disk, not Cursor's own state.
 
 ### Import preview
@@ -71,7 +71,7 @@ What the two files above add to your project's Cursor config:
 - One skill, `somacheck`, describing when and how to offer or request a
   vibecheck.
 - No rules, agents, commands, hooks, or variables. No API token or secret is
-  declared or required — see below.
+  declared or required. See below.
 
 ## OAuth and your own phone
 
@@ -83,7 +83,7 @@ protected-resource metadata at
 and also returns that same URL in a `WWW-Authenticate` challenge header on an
 unauthenticated request. [Cursor supports MCP OAuth](https://cursor.com/docs/mcp)
 and initiates the browser sign-in. There is
-no shared API key in this plugin, in this repo, or in Cursor's config — every
+no shared API key in this plugin, in this repo, or in Cursor's config. Every
 person authorizes their own account.
 
 Consent happens twice, deliberately:
@@ -107,7 +107,7 @@ public endpoint checks do not establish that this host acceptance passed.
 1. **Request:** the agent calls `request_vibecheck` with a proposition and
    your consent basis. This sends one request to your phone.
 2. **Gesture:** perform the three-second phone movement. Raw motion never
-   reaches Cursor, the agent, or Cursor's model provider — only the result
+   reaches Cursor, the agent, or Cursor's model provider. Only the result
    does.
 3. **Poll:** if you don't answer immediately, the agent calls
    `get_vibecheck_result` with the returned `request_id` rather than creating
@@ -145,7 +145,7 @@ conflicting/malformed/symlinked targets each failing with no writes, `--verify`
 against this package's existing validator, duplicate-key rejection, restrictive
 file modes, stale-plan detection, and rollback of an already-applied write
 when a later one in the same run fails. Passing this suite does not by itself
-mean Cursor has loaded the installed result — that still needs `--verify`
+mean Cursor has loaded the installed result. That still needs `--verify`
 against a real project, and ultimately a human confirming Cursor picks up the
 merged server and skill.
 
@@ -160,4 +160,4 @@ the separately operated hosted service requires your own SomaCheck account.
 
 Body language for AI agents, on your terms. The
 approved SomaCheck logo asset was not found in this repository, so no logo is
-referenced here — do not add one without confirming it is the approved asset.
+referenced here. Do not add one without confirming it is the approved asset.

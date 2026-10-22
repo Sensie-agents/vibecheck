@@ -10,7 +10,7 @@ SomaCheck gives the person an optional three-second phone check-in on their own 
 1. The person asks for a vibecheck.
 2. You believe one would help and the person accepts your exact proposed first-person statement first. Never send without that acceptance.
 
-When the person asks, choose a concise, first-person proposition from the context available (for example, about which of two approaches to take next) and send it yourself — do not make them supply wording unless they want to.
+When the person asks, choose a concise, first-person proposition from the context available (for example, about which of two approaches to take next) and send it yourself. Do not make them supply wording unless they want to.
 
 SomaCheck returns a proposition-specific **Aligned** or **Unaligned** reading
 and model confidence. Use this as meaningful input alongside the conversation
