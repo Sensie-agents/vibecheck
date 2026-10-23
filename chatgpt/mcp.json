@@ -3,17 +3,7 @@
   "mcpServers": {
     "somacheck": {
       "type": "streamable-http",
-      "url": "https://mcp.somacheck.com/functions/v1/mcp",
-      "extensions": {
-        "com.openai": {
-          "auth": {
-            "type": "oauth",
-            "client": {
-              "mode": "dcr"
-            }
-          }
-        }
-      }
+      "url": "https://mcp.somacheck.com/functions/v1/mcp"
     }
   }
 }
