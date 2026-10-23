@@ -58,10 +58,10 @@ test("Codex exposes six tools and requires an explicit consent basis", async (t)
     ["pending", "completed", "expired", "cancelled", "error"]);
   assert.deepEqual(byName.get_vibecheck_result.outputSchema.properties.status.enum,
     ["queued", "pending", "answered", "expired", "cancelled"]);
-  assert.equal("statement" in byName.request_vibecheck.outputSchema.properties, false);
+  assert.equal("statement" in byName.request_vibecheck.outputSchema.properties, true);
   assert.equal("statement" in byName.get_vibecheck_result.outputSchema.properties, false);
   const skill = readFileSync(new URL("../../plugins/vibecheck/skills/vibecheck/SKILL.md", import.meta.url), "utf8");
-  assert.match(skill, /result schemas do not return the proposition text/i);
+  assert.match(skill, /`get_vibecheck_result` schema does not return the proposition text/i);
   assert.match(skill, /wait for acceptance before\s+calling `request_vibecheck`/i);
   const rejected = await request(3, "tools/call", {
     name: "request_vibecheck",
