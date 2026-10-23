@@ -1,6 +1,6 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
-  "name": "somacheck-vibecheck",
+  "name": "app-6aa2bf7c89148191bb2be7b73eb06cb6",
   "version": "0.6.22",
   "description": "SomaCheck gives your agent a consented body-language signal: a three-second phone gesture returns Aligned or Unaligned with model confidence.",
   "author": {
