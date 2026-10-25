@@ -33,7 +33,7 @@ assert.deepEqual(claude.mcpServers.vibecheck.args, [
 ]);
 assert.match(skill, /Preserve supplied\s+first-person wording verbatim/i);
 assert.match(skill, /get_vibecheck_result/);
-assert.match(skill, /wait for acceptance before\s+calling `request_vibecheck`/i);
+assert.match(skill, /Wait for acceptance of an\s+offered exact statement only when the offer was yours/i);
 assert.match(skill, /request_vibecheck` returns `pending`, `completed`, `expired`, `cancelled`, or\s+`error`/);
 assert.match(skill, /`get_vibecheck_result` schema does not return the proposition text/i);
 assert.doesNotMatch(skill, /mcp__plugin_vibecheck_vibecheck__/);

@@ -66,10 +66,10 @@ for (const tool of [
 assert.doesNotMatch(skill, /mcp__vibecheck__/,
   "public Claude plugin skill must not retain direct-server tool names");
 assert.equal(manifest.skills, ".", "Claude must load the root SKILL.md explicitly");
-assert.match(skill, /wait for acceptance before\s+calling `request_vibecheck`/i,
+assert.match(skill, /Wait for acceptance of an\s+offered exact statement only when the offer was yours/i,
   "a proactive offer must not trigger a phone request before acceptance");
 assert.match(skill, /request_vibecheck` returns `pending`, `completed`, `expired`, `cancelled`, or\s+`error`/,
-  "request state guidance must match the 0.6.22 runtime schema");
+  "request state guidance must match the 0.6.23 runtime schema");
 assert.match(skill, /`get_vibecheck_result` schema does not return the proposition text/i,
   "the skill must not claim get_vibecheck_result returns the original statement");
 assert.match(skill, /SomaCheck returns a proposition-specific Aligned or\s+Unaligned reading and\s+model confidence/i,

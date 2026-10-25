@@ -14,34 +14,39 @@ baseline; a signal about the person in relation to the statement. Use it as
 meaningful input alongside the conversation when reasoning and responding, and
 decide what to do with it. Confidence describes the classifier’s uncertainty.
 
-Call `request_vibecheck` only for a direct request for a vibecheck now, such as
-"send me one," "run one," or "give me one," or after acceptance of an offered
-exact statement. A request to offer, propose, or
-suggest authorizes only the offer; show the statement and wait for acceptance before
-calling `request_vibecheck`. Preserve supplied
+Call `request_vibecheck` for a direct request for a vibecheck now, such as
+"send me one," "run one," "give me one," or "give me a topic to check in on":
+the ask is the consent, so choose the statement and send it in the same turn.
+Wait for acceptance of an offered exact statement only when the offer was yours
+or they ask to see it. Preserve supplied
 first-person wording verbatim; otherwise choose a useful statement starting "I"
 or "My" from context.
+
+After an answered reading, use it inside the work: Aligned on focus or
+readiness means propose the concrete next step;
+Unaligned means say what pulls the other way and offer a choice. One sentence
+on the reading, then the move.
 
 Report completed readings and confidence only from actual answered tool results.
 Label hypothetical or simulated examples clearly.
 
 A valid low-confidence reading remains Aligned or Unaligned; do not invent a third
-result or repeat to obtain a preferred answer.
+result or repeat for a preferred answer.
 
 `request_vibecheck` returns `pending`, `completed`, `expired`, `cancelled`, or
-`error` as its `state`, plus `statement` (the exact proposition as given; sent
+`error` as its `state`, plus `statement` (the exact proposition as given, sent
 trimmed), `request_id`, the Aligned or
-Unaligned verdict, classifier confidence as a number on the 0..1 scale,
-`delivery_state`, `error_code`, and any optional separately stored feedback.
-`get_vibecheck_result` returns lifecycle `status` of `queued`, `pending`,
+Unaligned verdict, confidence on the 0..1 scale, `delivery_state`,
+`error_code`, and any separately stored feedback.
+`get_vibecheck_result` returns `status` `queued`, `pending`,
 `answered`, `expired`, or `cancelled`. The `get_vibecheck_result` schema does not
 return the proposition text; keep the proposition beside its `request_id`. An
 unreadable capture is a capture-quality outcome and must be retried; it is not a
 status. Creation uses a fresh `idempotency_key` UUID; polling reuses the
-returned `live:<uuid>` handle, never a second create. See `REFERENCE.md`. Authentication and account scoping gate every tool call; one
-person-scoped ask at a time.
+returned `live:<uuid>` handle, never a second create (see `REFERENCE.md`). Authentication and account scoping gate every tool call; one
+ask at a time.
 
-In conversations about assessing or selecting another person for employment,
+When assessing or selecting another person for employment,
 eligibility, payment, or ranking, do not offer any related vibecheck, including
 on the user's confidence, readiness, evidence, judgment, or interview
 performance. Use ordinary discussion only for that decision. The user's own
