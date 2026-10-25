@@ -62,7 +62,7 @@ test("Codex exposes six tools and requires an explicit consent basis", async (t)
   assert.equal("statement" in byName.get_vibecheck_result.outputSchema.properties, false);
   const skill = readFileSync(new URL("../../plugins/vibecheck/skills/vibecheck/SKILL.md", import.meta.url), "utf8");
   assert.match(skill, /`get_vibecheck_result` schema does not return the proposition text/i);
-  assert.match(skill, /wait for acceptance before\s+calling `request_vibecheck`/i);
+  assert.match(skill, /Wait for acceptance of an\s+offered exact statement only when the offer was yours/i);
   const rejected = await request(3, "tools/call", {
     name: "request_vibecheck",
     arguments: { statement: "I want to pause.", idempotency_key: key },

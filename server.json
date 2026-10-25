@@ -3,7 +3,7 @@
   "name": "io.github.Sensie-agents/vibecheck",
   "title": "SomaCheck Vibecheck",
   "description": "Body language for your agent: a consented 3-second gesture, Aligned or Unaligned with confidence.",
-  "version": "0.6.22",
+  "version": "0.6.23",
   "websiteUrl": "https://somacheck.com/docs/hosted-mcp",
   "remotes": [
     {
@@ -15,7 +15,7 @@
     {
       "registryType": "npm",
       "identifier": "@somacheck/vibecheck",
-      "version": "0.6.22",
+      "version": "0.6.23",
       "transport": {
         "type": "stdio"
       }

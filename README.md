@@ -74,7 +74,7 @@ matches the route you choose.
   the recovery handle described below.
 - **Codex (local plugin).** Install this repository's portable plugin from the
   `somacheck-local` marketplace as described in [Install in Codex](#install-in-codex).
-  It starts the same pinned 0.6.22 local runtime for Codex. Codex does not
+  It starts the same pinned 0.6.23 local runtime for Codex. Codex does not
   use Claude Channels, so keep a pending request's handle and check that
   same request again until it is terminal.
 - **Claude.ai and Claude Desktop (hosted OAuth).** The hosted OAuth route is
@@ -146,7 +146,7 @@ This public repository contains the **Claude marketplace manifest** (`.claude-pl
 The portable Codex package lives under `plugins/vibecheck/` with its own
 `plugin.json`, `mcp.json`, and `skills/vibecheck/SKILL.md`;
 `.agents/plugins/marketplace.json` points to that package. Its
-local stdio server uses `@somacheck/vibecheck@0.6.22` with `--client codex`.
+local stdio server uses `@somacheck/vibecheck@0.6.23` with `--client codex`.
 The local marketplace is a direct install path. It is separate from the
 ChatGPT app directory, where SomaCheck is available, and from the Codex public directory submission.
 
@@ -179,7 +179,7 @@ open **Settings > Agent > Connect your agent** to obtain a short-lived code,
 then link this Codex client:
 
 ```text
-npx -y @somacheck/vibecheck@0.6.22 link <CODE> --client codex
+npx -y @somacheck/vibecheck@0.6.23 link <CODE> --client codex
 ```
 
 The code is private: enter it on your own device and terminal, never in a
@@ -205,20 +205,20 @@ Install [SomaCheck from the App Store](https://apps.apple.com/us/app/somacheck-v
 Get `<CODE>` from SomaCheck's **Settings > Agent > Connect your agent**, then link the local runtime:
 
 ```text
-npx -y @somacheck/vibecheck@0.6.22 link <CODE> --client claude
+npx -y @somacheck/vibecheck@0.6.23 link <CODE> --client claude
 ```
 
 Already linked? Install or repair the managed Claude setup without linking again:
 
 ```text
-npx -y @somacheck/vibecheck@0.6.22 setup claude
+npx -y @somacheck/vibecheck@0.6.23 setup claude
 ```
 
 Both commands install or update the public plugin, migrate recognized old
 SomaCheck registrations, and enable Claude's native marketplace auto-updates
 (`autoUpdate: true`) for `somacheck`. Unrelated configuration is preserved;
 custom or ambiguous registrations require review and are not silently replaced.
-This release is **plugin 0.6.23**, launching **runtime 0.6.22**. These version
+This release is **plugin 0.6.24**, launching **runtime 0.6.23**. These version
 numbers are independent.
 
 Future reviewed plugin releases can update through Claude's marketplace.
@@ -254,7 +254,7 @@ The Glama release represents the **local stdio runtime**, not the separately hos
 For a single person's self-hosted local use, mount that person's existing link configuration read-only:
 
 ```text
-docker run --rm -i -v "$HOME/.sensie:/home/node/.sensie:ro" somacheck-vibecheck:0.6.22
+docker run --rm -i -v "$HOME/.sensie:/home/node/.sensie:ro" somacheck-vibecheck:0.6.23
 ```
 
 Never bake a pairing code, token, or `config.json` into the image. Do not share one mounted configuration between people or use this image as a multi-tenant service. Glama schema discovery alone is not evidence of an authenticated phone round trip.
