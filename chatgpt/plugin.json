@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "app-6aa2bf7c89148191bb2be7b73eb06cb6",
-  "version": "0.6.24",
+  "version": "0.6.25",
   "description": "SomaCheck gives your agent a consented body-language signal: a three-second phone gesture returns Aligned or Unaligned with model confidence.",
   "author": {
     "name": "Sensie",

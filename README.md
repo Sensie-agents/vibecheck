@@ -1,7 +1,7 @@
 # vibecheck by Sensie
 
 SomaCheck returns a proposition-specific Aligned or Unaligned reading and
-model confidence. The reading is precognitive intelligence: the person's
+model confidence. The reading is a pre-verbal signal: the person's
 bodily response to that statement before words shape it, against their own
 baseline; a signal about the person in relation to the statement. Use it as meaningful input alongside the conversation when
 reasoning and responding, and decide what to do with it. Confidence describes the classifier’s uncertainty.
@@ -52,9 +52,9 @@ is never proof of phone display.
 
 | Tool | Purpose |
 | --- | --- |
-| `request_vibecheck` | Ask the person's body now: send one statement to their phone and wait up to 45 seconds for a precognitive reading, Aligned or Unaligned. |
+| `request_vibecheck` | Ask the person's body now: send one statement to their phone and wait up to 45 seconds for a pre-verbal reading, Aligned or Unaligned. |
 | `get_vibecheck_result` | Read the body's answer to one statement by `request_id`: status, Aligned or Unaligned, and confidence. Non-blocking; poll while pending. |
-| `get_vibecheck_context` | Read the person's recent completed readings, newest first, as precognitive context. Not for one pending ask. |
+| `get_vibecheck_context` | Read the person's recent completed readings, newest first, as pre-verbal context. Not for one pending ask. |
 | `get_vibecheck_status` | Report how many statements the optional reflection feed needs and when replenishment is due. Says nothing about the phone or any reading. |
 | `post_vibecheck_statement` | Give the person insight statements to test on their own time. Adds one to three items to the optional reflection feed, returns immediately, never notifies the phone. |
 | `share_somacheck_context` | Share 1–20 bounded, derived, user-authorized observations; raw conversations and secrets are rejected. |
@@ -74,7 +74,7 @@ matches the route you choose.
   the recovery handle described below.
 - **Codex (local plugin).** Install this repository's portable plugin from the
   `somacheck-local` marketplace as described in [Install in Codex](#install-in-codex).
-  It starts the same pinned 0.6.24 local runtime for Codex. Codex does not
+  It starts the same pinned 0.6.25 local runtime for Codex. Codex does not
   use Claude Channels, so keep a pending request's handle and check that
   same request again until it is terminal.
 - **Claude.ai and Claude Desktop (hosted OAuth).** The hosted OAuth route is
@@ -146,7 +146,7 @@ This public repository contains the **Claude marketplace manifest** (`.claude-pl
 The portable Codex package lives under `plugins/vibecheck/` with its own
 `plugin.json`, `mcp.json`, and `skills/vibecheck/SKILL.md`;
 `.agents/plugins/marketplace.json` points to that package. Its
-local stdio server uses `@somacheck/vibecheck@0.6.24` with `--client codex`.
+local stdio server uses `@somacheck/vibecheck@0.6.25` with `--client codex`.
 The local marketplace is a direct install path. It is separate from the
 ChatGPT app directory, where SomaCheck is available, and from the Codex public directory submission.
 
@@ -179,7 +179,7 @@ open **Settings > Agent > Connect your agent** to obtain a short-lived code,
 then link this Codex client:
 
 ```text
-npx -y @somacheck/vibecheck@0.6.24 link <CODE> --client codex
+npx -y @somacheck/vibecheck@0.6.25 link <CODE> --client codex
 ```
 
 The code is private: enter it on your own device and terminal, never in a
@@ -205,20 +205,20 @@ Install [SomaCheck from the App Store](https://apps.apple.com/us/app/somacheck-v
 Get `<CODE>` from SomaCheck's **Settings > Agent > Connect your agent**, then link the local runtime:
 
 ```text
-npx -y @somacheck/vibecheck@0.6.24 link <CODE> --client claude
+npx -y @somacheck/vibecheck@0.6.25 link <CODE> --client claude
 ```
 
 Already linked? Install or repair the managed Claude setup without linking again:
 
 ```text
-npx -y @somacheck/vibecheck@0.6.24 setup claude
+npx -y @somacheck/vibecheck@0.6.25 setup claude
 ```
 
 Both commands install or update the public plugin, migrate recognized old
 SomaCheck registrations, and enable Claude's native marketplace auto-updates
 (`autoUpdate: true`) for `somacheck`. Unrelated configuration is preserved;
 custom or ambiguous registrations require review and are not silently replaced.
-This release is **plugin 0.6.25**, launching **runtime 0.6.24**. These version
+This release is **plugin 0.6.26**, launching **runtime 0.6.25**. These version
 numbers are independent.
 
 Future reviewed plugin releases can update through Claude's marketplace.
@@ -254,7 +254,7 @@ The Glama release represents the **local stdio runtime**, not the separately hos
 For a single person's self-hosted local use, mount that person's existing link configuration read-only:
 
 ```text
-docker run --rm -i -v "$HOME/.sensie:/home/node/.sensie:ro" somacheck-vibecheck:0.6.24
+docker run --rm -i -v "$HOME/.sensie:/home/node/.sensie:ro" somacheck-vibecheck:0.6.25
 ```
 
 Never bake a pairing code, token, or `config.json` into the image. Do not share one mounted configuration between people or use this image as a multi-tenant service. Glama schema discovery alone is not evidence of an authenticated phone round trip.
