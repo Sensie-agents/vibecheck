@@ -59,9 +59,10 @@ test("Codex exposes six tools and requires an explicit consent basis", async (t)
   assert.deepEqual(byName.get_vibecheck_result.outputSchema.properties.status.enum,
     ["queued", "pending", "answered", "expired", "cancelled"]);
   assert.equal("statement" in byName.request_vibecheck.outputSchema.properties, true);
-  assert.equal("statement" in byName.get_vibecheck_result.outputSchema.properties, false);
+  assert.equal("statement" in byName.get_vibecheck_result.outputSchema.properties, true);
   const skill = readFileSync(new URL("../../plugins/vibecheck/skills/vibecheck/SKILL.md", import.meta.url), "utf8");
-  assert.match(skill, /`get_vibecheck_result` schema does not return the proposition text/i);
+  assert.match(skill, /`get_vibecheck_result` returns[\s\S]{0,120}`statement`, the exact proposition the\s+person answered/i);
+  assert.doesNotMatch(skill, /does not return the proposition text/i);
   assert.match(skill, /Wait for acceptance of an\s+offered exact statement only when the offer was yours/i);
   const rejected = await request(3, "tools/call", {
     name: "request_vibecheck",

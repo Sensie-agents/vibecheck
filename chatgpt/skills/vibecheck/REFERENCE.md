@@ -44,8 +44,8 @@ A `completed` state with a verdict is the only evidence of a reading.
 
 Input: `request_id`. Output: `status` (`queued`, `pending`, `answered`,
 `expired`, `cancelled`), `verdict`, `confidence`, `latency_s`,
-`delivery_state`, `error_code`, `user_feedback`. It does not return the
-proposition text; keep the proposition beside its `request_id`.
+`delivery_state`, `error_code`, `user_feedback`, and `statement`, the exact
+proposition the person answered.
 
 Polling: while `pending`, read the same handle about every 15 seconds until
 `answered`, `expired`, or `cancelled`. Never create a second request to check
