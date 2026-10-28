@@ -38,12 +38,13 @@ result or repeat to obtain a preferred answer.
 `request_id`; keep that pairing in the conversation. The request and result
 tools return the handle, lifecycle state, binary verdict when answered,
 classifier confidence as a number on the 0..1 scale, delivery or error
-information, and any optional separately stored feedback. The
-`get_vibecheck_result` schema does not return the proposition text.
+information, and any optional separately stored feedback.
 `request_vibecheck` returns `pending`, `completed`, `expired`, `cancelled`, or
 `error` as its `state`.
 `get_vibecheck_result` returns lifecycle `status` of `queued`, `pending`,
-`answered`, `expired`, or `cancelled`. A failed tool call is an error response,
+`answered`, `expired`, or `cancelled`, and `statement`, the exact proposition the
+person answered, so a result read later still names its statement. A failed
+tool call is an error response,
 not a sixth result status. `delivery_state`
 (`queued`, `processing`, `sent`, `failed`, `skipped`) and `error_code`
 are separate fields, not lifecycle states. An unreadable capture is a capture-quality outcome and must be retried; it is not a status.

@@ -39,8 +39,8 @@ trimmed), `request_id`, the Aligned or
 Unaligned verdict, confidence on the 0..1 scale, `delivery_state`,
 `error_code`, and any separately stored feedback.
 `get_vibecheck_result` returns `status` `queued`, `pending`,
-`answered`, `expired`, or `cancelled`. The `get_vibecheck_result` schema does not
-return the proposition text; keep the proposition beside its `request_id`. An
+`answered`, `expired`, or `cancelled`, and `statement`, the exact proposition the
+person answered, so a result read later still names its statement. An
 unreadable capture is a capture-quality outcome and must be retried; it is not a
 status. Creation uses a fresh `idempotency_key` UUID; polling reuses the
 returned `live:<uuid>` handle, never a second create (see `REFERENCE.md`). Authentication and account scoping gate every tool call; one
