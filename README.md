@@ -1,7 +1,7 @@
 # vibecheck by Sensie
 
 SomaCheck returns a proposition-specific Aligned or Unaligned reading and
-model confidence. The reading is precognitive intelligence: the person's
+model confidence. The reading is a pre-verbal signal: the person's
 bodily response to that statement before words shape it, against their own
 baseline; a signal about the person in relation to the statement. Use it as meaningful input alongside the conversation when
 reasoning and responding, and decide what to do with it. Confidence describes the classifier’s uncertainty.
@@ -52,9 +52,9 @@ is never proof of phone display.
 
 | Tool | Purpose |
 | --- | --- |
-| `request_vibecheck` | Ask the person's body now: send one statement to their phone and wait up to 45 seconds for a precognitive reading, Aligned or Unaligned. |
+| `request_vibecheck` | Ask the person's body now: send one statement to their phone and wait up to 45 seconds for a pre-verbal reading, Aligned or Unaligned. |
 | `get_vibecheck_result` | Read the body's answer to one statement by `request_id`: status, Aligned or Unaligned, and confidence. Non-blocking; poll while pending. |
-| `get_vibecheck_context` | Read the person's recent completed readings, newest first, as precognitive context. Not for one pending ask. |
+| `get_vibecheck_context` | Read the person's recent completed readings, newest first, as pre-verbal context. Not for one pending ask. |
 | `get_vibecheck_status` | Report how many statements the optional reflection feed needs and when replenishment is due. Says nothing about the phone or any reading. |
 | `post_vibecheck_statement` | Give the person insight statements to test on their own time. Adds one to three items to the optional reflection feed, returns immediately, never notifies the phone. |
 | `share_somacheck_context` | Share 1–20 bounded, derived, user-authorized observations; raw conversations and secrets are rejected. |
