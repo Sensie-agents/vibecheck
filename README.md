@@ -1,5 +1,7 @@
 # vibecheck by Sensie
 
+[![mcptry](https://mcptry.com/badge/io.github.Sensie-agents/vibecheck)](https://mcptry.com/servers/io.github.Sensie-agents/vibecheck)
+
 SomaCheck returns a proposition-specific Aligned or Unaligned reading and
 model confidence. The reading is a pre-verbal signal: the person's
 bodily response to that statement before words shape it, against their own
